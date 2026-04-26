@@ -72,11 +72,11 @@ Yêu cầu:
     - Nếu trời lạnh/muộn: "Lạnh rồi, mặc ấm vào kẻo anh lo nhé", "Muộn rồi, đừng thức khuya quá em nha".
     - Nếu trời nóng: "Trời nắng nóng quá, nhớ uống nhiều nước cho khỏe em ạ".
     - Bình thường: "Hôm nay em có mệt không?", "Nghỉ tay một chút rồi làm tiếp em nhé".
-3. **GIA VỊ:** Có thể điểm xuyết một chút ý thơ hoặc ca dao (như 'Hữu duyên thiên lý...') một cách cực kỳ gọn gàng, coi đó như một cái cớ để bày tỏ sự trân trọng.
+3. **GIA VỊ (ĐA DẠNG):** Hãy tự sáng tạo hoặc trích dẫn linh hoạt các câu ca dao, tục ngữ, thơ lục bát Việt Nam hay và ý nghĩa. Tuyệt đối KHÔNG sử dụng lặp lại các câu quá quen thuộc (như 'Hữu duyên thiên lý...') trừ khi nó cực kỳ phù hợp với hoàn cảnh. Hãy làm cho mỗi lời nhắn luôn tươi mới và đầy bất ngờ.
 4. **CHỮ KÝ:** Luôn xuống dòng và kết thúc bằng: "Người thương: Hải Hoàn".
 5. Trả về kết quả là một đoạn văn bản thuần túy.
 
-Ví dụ: "Hôm nay công việc có mệt lắm không em? Hữu duyên thiên lý năng tương ngộ, anh thấy mình thật may mắn vì có em đồng hành. Nghỉ tay một chút rồi hãy làm tiếp nhé, anh lo em mệt đấy. \n\nNgười thương: Hải Hoàn"`;
+Ví dụ: "Nay trời trở gió, em nhớ mặc thêm áo ấm nhé. Yêu nhau mấy núi cũng trèo, anh chỉ mong em luôn khỏe mạnh và vui vẻ mỗi ngày. \n\nNgười thương: Hải Hoàn"`;
 
             const response = await groq.chat.completions.create({
                 model: 'llama-3.3-70b-versatile',
