@@ -4,7 +4,7 @@ import {
     TableCell, TableContainer, TableHead, TableRow, IconButton,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField,
     CircularProgress, MenuItem, Stack, FormControl, InputLabel, Select,
-    Chip, Tooltip, Tabs, Tab, Badge
+    Chip, Tooltip, Tabs, Tab, Badge, Card, Divider
 } from '@mui/material';
 import { Add, Edit, Delete, Class as ClassIcon, People, AttachMoney, PersonRemove, Restore, Inventory } from '@mui/icons-material';
 import classService from '../services/classService';
@@ -183,34 +183,34 @@ export default function ClassManagement() {
     };
 
     return (
-        <Container maxWidth="lg">
-            <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
+            <Box sx={{ mb: { xs: 3, md: 4 }, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 2 }}>
                 <Box>
-                    <Typography variant="h4" color="primary.dark" sx={{ mb: 1, fontWeight: 700 }}>
+                    <Typography variant="h4" color="primary.dark" sx={{ mb: 1, fontWeight: 700, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
                         Quản lý Lớp học
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Tổ chức học sinh và theo dõi trạng thái hoạt động của các lớp.
+                        Tổ chức học sinh và theo dõi trạng thái hoạt động.
                     </Typography>
                 </Box>
-                <Button variant="contained" startIcon={<Add />} onClick={() => handleOpen()} sx={{ disableElevation: true, borderRadius: 2 }}>
+                <Button fullWidth={window.innerWidth < 600} variant="contained" startIcon={<Add />} onClick={() => handleOpen()} sx={{ disableElevation: true, borderRadius: 2, py: 1 }}>
                     Thêm lớp mới
                 </Button>
             </Box>
 
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: { xs: 2, md: 3 } }}>
                 <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)} textColor="primary" indicatorColor="primary">
                     <Tab 
                         label={
                             <Badge badgeContent={counts.active} color="primary" sx={{ '& .MuiBadge-badge': { right: -12, top: 2 } }}>
-                                <Typography sx={{ fontWeight: 700 }}>Đang hoạt động</Typography>
+                                <Typography sx={{ fontWeight: 700, fontSize: { xs: '0.8rem', sm: '1rem' } }}>Đang chạy</Typography>
                             </Badge>
                         } 
                     />
                     <Tab 
                         label={
                             <Badge badgeContent={counts.archived} color="warning" sx={{ '& .MuiBadge-badge': { right: -12, top: 2 } }}>
-                                <Typography sx={{ fontWeight: 700 }}>Đã lưu trữ</Typography>
+                                <Typography sx={{ fontWeight: 700, fontSize: { xs: '0.8rem', sm: '1rem' } }}>Lưu trữ</Typography>
                             </Badge>
                         } 
                     />
@@ -218,84 +218,145 @@ export default function ClassManagement() {
             </Box>
 
             {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}><CircularProgress /></Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}><CircularProgress color="secondary" /></Box>
             ) : (
-                <TableContainer component={Paper} sx={{ boxShadow: 'none', border: '1px solid #eee', borderRadius: 2 }}>
-                    <Table>
-                        <TableHead sx={{ bgcolor: '#f9f9f9' }}>
-                            <TableRow>
-                                <TableCell sx={{ fontWeight: 700 }}>Tên lớp</TableCell>
-                                <TableCell sx={{ fontWeight: 700 }}>Khóa học</TableCell>
-                                <TableCell sx={{ fontWeight: 700 }}>Mô tả</TableCell>
-                                <TableCell align="center" sx={{ fontWeight: 700 }}>Học sinh</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700 }}>Thao tác</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {classes.length === 0 ? (
+                <>
+                    {/* Desktop Table */}
+                    <TableContainer component={Paper} sx={{ display: { xs: 'none', md: 'block' }, boxShadow: 'none', border: '1px solid #eee', borderRadius: 3, overflow: 'hidden' }}>
+                        <Table>
+                            <TableHead sx={{ bgcolor: '#f9f9f9' }}>
                                 <TableRow>
-                                    <TableCell colSpan={5} align="center" sx={{ py: 10 }}>
-                                        <Box sx={{ opacity: 0.5 }}>
-                                            <Inventory sx={{ fontSize: 48, mb: 1 }} />
-                                            <Typography variant="body1">
-                                                {tabValue === 0 ? "Trúc chưa có lớp học nào đang hoạt động." : "Chưa có lớp nào trong danh sách lưu trữ."}
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Tên lớp</TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Khóa học</TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Mô tả</TableCell>
+                                    <TableCell align="center" sx={{ fontWeight: 700 }}>Học sinh</TableCell>
+                                    <TableCell align="right" sx={{ fontWeight: 700 }}>Thao tác</TableCell>
                                 </TableRow>
-                            ) : (
-                                classes.map((item) => (
-                                    <TableRow key={item._id} hover>
-                                        <TableCell sx={{ fontWeight: 600 }}>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <ClassIcon fontSize="small" color={tabValue === 0 ? "primary" : "disabled"} />
-                                                {item.name}
-                                            </Stack>
+                            </TableHead>
+                            <TableBody>
+                                {classes.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} align="center" sx={{ py: 10 }}>
+                                            <Box sx={{ opacity: 0.5 }}>
+                                                <Inventory sx={{ fontSize: 48, mb: 1 }} />
+                                                <Typography variant="body1">
+                                                    {tabValue === 0 ? "Trúc chưa có lớp học nào đang hoạt động." : "Chưa có lớp nào trong danh sách lưu trữ."}
+                                                </Typography>
+                                            </Box>
                                         </TableCell>
-                                        <TableCell>{item.course?.name || 'N/A'}</TableCell>
-                                        <TableCell sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>{item.description || '-'}</TableCell>
-                                        <TableCell align="center">
+                                    </TableRow>
+                                ) : (
+                                    classes.map((item) => (
+                                        <TableRow key={item._id} hover>
+                                            <TableCell sx={{ fontWeight: 600 }}>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <ClassIcon fontSize="small" color={tabValue === 0 ? "primary" : "disabled"} />
+                                                    {item.name}
+                                                </Stack>
+                                            </TableCell>
+                                            <TableCell>{item.course?.name || 'N/A'}</TableCell>
+                                            <TableCell sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>{item.description || '-'}</TableCell>
+                                            <TableCell align="center">
+                                                <Button 
+                                                    size="small" 
+                                                    variant="outlined" 
+                                                    startIcon={<People />}
+                                                    onClick={() => handleOpenStudents(item)}
+                                                    sx={{ borderRadius: 4, textTransform: 'none' }}
+                                                >
+                                                    Danh sách
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                {tabValue === 0 ? (
+                                                    <Stack direction="row" spacing={0.5} justifyContent="flex-end">
+                                                        <Tooltip title="Chỉnh sửa thông tin">
+                                                            <IconButton onClick={() => handleOpen(item)} color="primary" size="small"><Edit fontSize="small" /></IconButton>
+                                                        </Tooltip>
+                                                        <Tooltip title="Chuyển vào Lưu trữ">
+                                                            <IconButton onClick={() => handleArchive(item._id)} color="warning" size="small"><Delete fontSize="small" /></IconButton>
+                                                        </Tooltip>
+                                                    </Stack>
+                                                ) : (
+                                                    <Tooltip title="Khôi phục lớp học này (Gỡ lưu trữ)">
+                                                        <Button 
+                                                            variant="contained" 
+                                                            color="success" 
+                                                            size="small" 
+                                                            startIcon={<Restore />}
+                                                            onClick={() => handleRestore(item._id)}
+                                                            sx={{ textTransform: 'none', borderRadius: 4, px: 2 }}
+                                                        >
+                                                            Khôi phục
+                                                        </Button>
+                                                    </Tooltip>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                    {/* Mobile Card List */}
+                    <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', gap: 2 }}>
+                        {classes.length === 0 ? (
+                            <Box sx={{ py: 5, textAlign: 'center', opacity: 0.5 }}>
+                                <Inventory sx={{ fontSize: 48, mb: 1 }} />
+                                <Typography variant="body2">{tabValue === 0 ? "Không có lớp hoạt động." : "Không có lớp lưu trữ."}</Typography>
+                            </Box>
+                        ) : (
+                            classes.map((item) => (
+                                <Card key={item._id} sx={{ borderRadius: 3, border: '1px solid #eee', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+                                    <Box sx={{ p: 2 }}>
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                                            <Box>
+                                                <Typography fontWeight={700} color="primary.main">{item.name}</Typography>
+                                                <Typography variant="caption" color="text.secondary">{item.course?.name || 'Chưa chọn khóa'}</Typography>
+                                            </Box>
+                                            <Chip label="Đang dạy" size="small" color={tabValue === 0 ? "success" : "default"} sx={{ height: 20, fontSize: '0.65rem' }} />
+                                        </Box>
+                                        
+                                        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2, fontSize: '0.85rem' }}>
+                                            {item.description || 'Không có mô tả cho lớp học này.'}
+                                        </Typography>
+
+                                        <Divider sx={{ mb: 2 }} />
+
+                                        <Stack direction="row" spacing={1} justifyContent="space-between">
                                             <Button 
                                                 size="small" 
                                                 variant="outlined" 
-                                                startIcon={<People />}
+                                                startIcon={<People />} 
                                                 onClick={() => handleOpenStudents(item)}
-                                                sx={{ borderRadius: 4, textTransform: 'none' }}
+                                                sx={{ borderRadius: 2, fontSize: '0.75rem' }}
                                             >
-                                                Danh sách
+                                                Học sinh
                                             </Button>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {tabValue === 0 ? (
-                                                <Stack direction="row" spacing={0.5} justifyContent="flex-end">
-                                                    <Tooltip title="Chỉnh sửa thông tin">
-                                                        <IconButton onClick={() => handleOpen(item)} color="primary" size="small"><Edit fontSize="small" /></IconButton>
-                                                    </Tooltip>
-                                                    <Tooltip title="Chuyển vào Lưu trữ">
-                                                        <IconButton onClick={() => handleArchive(item._id)} color="warning" size="small"><Delete fontSize="small" /></IconButton>
-                                                    </Tooltip>
-                                                </Stack>
-                                            ) : (
-                                                <Tooltip title="Khôi phục lớp học này (Gỡ lưu trữ)">
-                                                    <Button 
-                                                        variant="contained" 
-                                                        color="success" 
-                                                        size="small" 
-                                                        startIcon={<Restore />}
-                                                        onClick={() => handleRestore(item._id)}
-                                                        sx={{ textTransform: 'none', borderRadius: 4, px: 2 }}
-                                                    >
+                                            <Stack direction="row" spacing={0.5}>
+                                                {tabValue === 0 ? (
+                                                    <>
+                                                        <IconButton size="small" color="primary" onClick={() => handleOpen(item)} sx={{ border: '1px solid', borderColor: 'primary.light' }}>
+                                                            <Edit fontSize="small" />
+                                                        </IconButton>
+                                                        <IconButton size="small" color="warning" onClick={() => handleArchive(item._id)} sx={{ border: '1px solid', borderColor: 'warning.light' }}>
+                                                            <Delete fontSize="small" />
+                                                        </IconButton>
+                                                    </>
+                                                ) : (
+                                                    <Button size="small" variant="contained" color="success" startIcon={<Restore />} onClick={() => handleRestore(item._id)} sx={{ borderRadius: 2 }}>
                                                         Khôi phục
                                                     </Button>
-                                                </Tooltip>
-                                            )}
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                                                )}
+                                            </Stack>
+                                        </Stack>
+                                    </Box>
+                                </Card>
+                            ))
+                        )}
+                    </Box>
+                </>
             )}
 
             {/* Dialog Thêm/Sửa Lớp */}

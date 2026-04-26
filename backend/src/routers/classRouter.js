@@ -6,10 +6,13 @@ const router = express.Router();
 
 router.use(authMiddleWare.verifyAccessToken);
 
-router.post('/', classController.createClass);
 router.get('/', classController.getAllClasses);
 router.get('/course/:courseId', classController.getClassesByCourse);
 router.get('/:id', classController.getClass);
+
+// ADMIN ONLY
+router.use(authMiddleWare.verifyAdmin);
+router.post('/', classController.createClass);
 router.put('/:id', classController.updateClass);
 router.delete('/:id', classController.deleteClass);
 

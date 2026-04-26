@@ -18,8 +18,20 @@ const ProtectedRoute = ({
     requireAuth = true
 }) => {
     const location = useLocation();
-    const { isAuthenticated, currentUser } = useSelector((state) => state.auth);
+    let { isAuthenticated, currentUser } = useSelector((state) => state.auth);
     const { accessToken } = useSelector((state) => state.token);
+
+    // Xử lý trường hợp currentUser bị lưu dưới dạng string (do lỗi persist hoặc state)
+    if (typeof currentUser === 'string' && currentUser.startsWith('{')) {
+        try {
+            currentUser = JSON.parse(currentUser);
+        } catch (e) {
+            console.error('Error parsing currentUser string:', e);
+        }
+    }
+
+    // Chuẩn hóa isAuthenticated nếu nó bị lưu thành string "true"/"false"
+    const isAuth = isAuthenticated === true || isAuthenticated === 'true';
 
     // Đang kiểm tra authentication (loading state)
     // Nếu có token nhưng chưa có currentUser thì đang load
@@ -41,17 +53,29 @@ const ProtectedRoute = ({
     }
 
     // Chưa đăng nhập
-    if (requireAuth && !isAuthenticated) {
+    if (requireAuth && !isAuth) {
         // Lưu lại đường dẫn hiện tại để redirect sau khi login
         return <Navigate to="/signin" state={{ from: location }} replace />;
     }
 
     // Kiểm tra role nếu có yêu cầu
     if (allowedRoles.length > 0 && currentUser) {
-        const userRole = currentUser.role;
+        // Chuyển role hiện tại về lowercase để so sánh (đề phòng db lưu ADMIN/Admin)
+        const userRole = (currentUser.role || '').toLowerCase();
+        
+        // Nếu đã có currentUser mà không có role, có thể do data cũ trong persist
+        if (!currentUser.role && accessToken) {
+             // Có thể thêm logic reload user ở đây nếu cần
+        }
 
-        if (!allowedRoles.includes(userRole)) {
+        const normalizedAllowedRoles = allowedRoles.map(r => r.toLowerCase());
+
+        if (!normalizedAllowedRoles.includes(userRole)) {
             // Không có quyền truy cập
+            const { toast } = require('sonner');
+            setTimeout(() => {
+                toast.error('Bạn không có quyền hạn này, hãy đăng nhập quyền admin');
+            }, 100);
             return <Navigate to={redirectTo} replace />;
         }
     }
@@ -98,8 +122,9 @@ export const AuthRoute = ({ children, redirectTo = '/signin' }) => {
  */
 export const GuestRoute = ({ children, redirectTo = '/' }) => {
     const { isAuthenticated } = useSelector((state) => state.auth);
+    const isAuth = isAuthenticated === true || isAuthenticated === 'true';
 
-    if (isAuthenticated) {
+    if (isAuth) {
         return <Navigate to={redirectTo} replace />;
     }
 

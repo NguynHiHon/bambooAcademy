@@ -3,15 +3,16 @@ import {
     Box, Container, Typography, Paper, Button, Stack,
     Card, CardContent, IconButton, Chip, Divider, Avatar,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, Select, FormControl, InputLabel,
-    CircularProgress
+    CircularProgress, Tooltip, useMediaQuery, useTheme
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 
-import { CheckCircle, Cancel, EventBusy, MoreTime, CalendarMonth, FilterAlt } from '@mui/icons-material';
+import { CheckCircle, Cancel, EventBusy, MoreTime, CalendarMonth, FilterAlt, Close, ReceiptLong } from '@mui/icons-material';
 import lessonService from '../services/lessonService';
 import classService from '../services/classService';
 import dayjs from 'dayjs';
 import { toast } from 'sonner';
+import * as XLSX from 'xlsx';
 
 export default function AttendancePage() {
     const [classes, setClasses] = useState([]);
@@ -133,19 +134,66 @@ export default function AttendancePage() {
         }
     };
 
+    const handleExportExcel = async () => {
+        if (!selectedClass) return;
+        setSyncing(true);
+        try {
+            const data = await lessonService.getMonthlyReport({
+                classId: selectedClass,
+                month,
+                year
+            });
+
+            if (data.length === 0) {
+                toast.warning('Không có dữ liệu điểm danh thực tế trong tháng này.');
+                return;
+            }
+
+            const className = classes.find(c => c._id === selectedClass)?.name || '';
+            const exportData = data.map(item => ({
+                'Ngày học': dayjs(item.date).format('DD/MM/YYYY'),
+                'Giờ học': item.actualTime,
+                'Họ tên học sinh': item.studentName,
+                'Trạng thái điểm danh': item.status === 'present' ? 'Có mặt' : item.status === 'absent' ? 'Vắng mặt' : 'Chưa điểm danh',
+                'Trạng thái buổi học': item.lessonStatus === 'completed' ? 'Đã hoàn thành' : item.lessonStatus === 'cancelled' ? 'Đã hủy' : 'Sắp học'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "DiemDanh");
+
+            // Format column widths
+            const wscols = [
+                {wch: 15}, // Ngày
+                {wch: 15}, // Giờ
+                {wch: 25}, // Tên
+                {wch: 20}, // Trạng thái điểm danh
+                {wch: 20}, // Trạng thái buổi học
+            ];
+            ws['!cols'] = wscols;
+
+            XLSX.writeFile(wb, `Diem_Danh_Lop_${className.replace(/\s+/g, '_')}_Thang_${month}_${year}.xlsx`);
+            toast.success('Đã xuất file Excel điểm danh');
+        } catch (error) {
+            toast.error('Lỗi khi xuất file Excel');
+        } finally {
+            setSyncing(false);
+        }
+    };
+
     const months = Array.from({ length: 12 }, (_, i) => i + 1);
     const years = [dayjs().year() - 1, dayjs().year(), dayjs().year() + 1];
 
     return (
-        <Container maxWidth="lg">
-            <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" color="primary.dark" sx={{ mb: 1, fontWeight: 700 }}>
-                    Điểm danh & Quản lý Buổi học
+        <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
+            <Box sx={{ mb: { xs: 2, md: 4 } }}>
+                <Typography variant="h4" color="primary.dark" sx={{ mb: 1, fontWeight: 700, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
+                    Điểm danh & Buổi học
                 </Typography>
                 
-                <Paper sx={{ p: 2, mt: 2, borderRadius: 2, boxShadow: 'none', border: '1px solid #eee' }}>
+                <Paper sx={{ p: { xs: 1.5, md: 2 }, mt: 2, borderRadius: 3, boxShadow: '0 2px 10px rgba(0,0,0,0.03)', border: '1px solid #eee' }}>
                     <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems="center">
-                        <FormControl sx={{ minWidth: 200 }} size="small">
+                        <FormControl fullWidth sx={{ maxWidth: { md: 250 } }} size="small">
                             <InputLabel>Chọn lớp học</InputLabel>
                             <Select
                                 value={selectedClass}
@@ -156,13 +204,13 @@ export default function AttendancePage() {
                             </Select>
                         </FormControl>
 
-                        <Stack direction="row" spacing={1} alignItems="center">
+                        <Stack direction="row" spacing={1} alignItems="center" sx={{ width: { xs: '100%', md: 'auto' }, justifyContent: 'center' }}>
                             <FilterAlt color="action" fontSize="small" />
                             <Select
                                 value={month}
                                 onChange={(e) => setMonth(e.target.value)}
                                 size="small"
-                                sx={{ width: 100 }}
+                                sx={{ flex: 1, minWidth: 100 }}
                             >
                                 {months.map(m => <MenuItem key={m} value={m}>Tháng {m}</MenuItem>)}
                             </Select>
@@ -170,87 +218,92 @@ export default function AttendancePage() {
                                 value={year}
                                 onChange={(e) => setYear(e.target.value)}
                                 size="small"
-                                sx={{ width: 100 }}
+                                sx={{ flex: 1, minWidth: 100 }}
                             >
                                 {years.map(y => <MenuItem key={y} value={y}>Năm {y}</MenuItem>)}
                             </Select>
                         </Stack>
 
-                        <Box sx={{ flexGrow: 1 }} />
+                        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }} />
                         
-                        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                            Dữ liệu tự động cập nhật theo thời khóa biểu
-                        </Typography>
+                        <Button 
+                            variant="outlined" 
+                            startIcon={<ReceiptLong />} 
+                            size="small" 
+                            onClick={handleExportExcel}
+                            disabled={syncing}
+                            sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600 }}
+                        >
+                            {syncing ? 'Đang xuất...' : 'Xuất Excel tháng'}
+                        </Button>
                     </Stack>
                 </Paper>
             </Box>
 
             {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}><CircularProgress /></Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}><CircularProgress color="secondary" /></Box>
             ) : (
-                <Grid container spacing={2}>
+                <Grid container spacing={{ xs: 2, md: 3 }}>
                     {lessons.length === 0 ? (
                         <Grid item xs={12}>
                             <Box sx={{ py: 10, textAlign: 'center', opacity: 0.5 }}>
                                 <CalendarMonth sx={{ fontSize: 60, mb: 2 }} />
                                 <Typography>Không có buổi học nào trong tháng {month}/{year}.</Typography>
-                                <Typography variant="body2">Trúc hãy thử bấm nút "Đồng bộ lịch" ở trên nhé!</Typography>
                             </Box>
                         </Grid>
                     ) : (
                         lessons.map((lesson) => (
                             <Grid item xs={12} md={6} key={lesson._id}>
-                                <Card variant="outlined" sx={{ 
+                                <Card sx={{ 
                                     borderRadius: 3,
-                                    transition: '0.3s',
-                                    '&:hover': { boxShadow: '0 4px 12px rgba(0,0,0,0.05)' },
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+                                    border: '1px solid #eee',
                                     borderLeft: `6px solid ${
                                         lesson.status === 'completed' ? '#2E7D32' : 
                                         lesson.status === 'cancelled' ? '#d32f2f' : '#D4AF37'
                                     }` 
                                 }}>
-                                    <CardContent sx={{ p: 2.5 }}>
-                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                    <CardContent sx={{ p: { xs: 2, md: 2.5 } }}>
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
                                             <Box>
-                                                <Typography variant="h6" fontWeight={700} color="text.primary">
+                                                <Typography variant="h6" fontWeight={700} sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}>
                                                     {dayjs(lesson.date).format('dddd, DD/MM')}
-                                                    {lesson.isPlan && <Chip label="Kế hoạch" size="small" sx={{ ml: 1, height: 20, fontSize: '0.6rem', bgcolor: '#eee' }} />}
+                                                    {lesson.isPlan && <Chip label="Plan" size="small" sx={{ ml: 1, height: 18, fontSize: '0.6rem' }} />}
                                                 </Typography>
                                                 <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
-                                                    <Chip label={lesson.period} size="small" color="primary" variant="outlined" sx={{ height: 20, fontSize: '0.7rem' }} />
-                                                    <Typography variant="body2" color="text.secondary">
+                                                    <Chip label={lesson.period} size="small" variant="outlined" sx={{ height: 20, fontSize: '0.7rem' }} />
+                                                    <Typography variant="body2" color="text.secondary" fontWeight={500}>
                                                         {lesson.actualTime}
                                                     </Typography>
                                                 </Stack>
                                             </Box>
                                             <Chip 
-                                                label={lesson.status === 'scheduled' ? 'Sắp diễn ra' : lesson.status === 'completed' ? 'Đã dạy xong' : 'Đã hủy'} 
+                                                label={lesson.status === 'scheduled' ? 'Sắp học' : lesson.status === 'completed' ? 'Xong' : 'Hủy'} 
                                                 size="small"
-                                                variant="filled"
                                                 color={lesson.status === 'completed' ? 'success' : lesson.status === 'cancelled' ? 'error' : 'warning'}
-                                                sx={{ fontWeight: 600 }}
+                                                sx={{ fontWeight: 700, fontSize: '0.7rem' }}
                                             />
                                         </Box>
 
-                                        <Divider sx={{ my: 2 }} />
+                                        <Divider sx={{ mb: 2 }} />
 
                                         <Stack direction="row" spacing={1} justifyContent="flex-end">
                                             {lesson.status === 'scheduled' && (
                                                 <>
-                                                    <Button size="small" variant="contained" startIcon={<CheckCircle />} onClick={() => handleOpenAttendance(lesson)} sx={{ borderRadius: 2 }}>
+                                                    <Button size="small" variant="contained" startIcon={<CheckCircle />} onClick={() => handleOpenAttendance(lesson)} sx={{ borderRadius: 2, fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
                                                         Điểm danh
                                                     </Button>
-                                                    <Button size="small" variant="outlined" color="success" onClick={() => handleCompleteLesson(lesson._id)} sx={{ borderRadius: 2 }}>
+                                                    <Button size="small" color="success" onClick={() => handleCompleteLesson(lesson._id)} sx={{ borderRadius: 2, fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
                                                         Dạy xong
                                                     </Button>
-                                                    <IconButton color="error" onClick={() => handleCancelLesson(lesson._id)} size="small" title="Hủy buổi">
+                                                    <IconButton color="error" onClick={() => handleCancelLesson(lesson._id)} size="small">
                                                         <EventBusy fontSize="small" />
                                                     </IconButton>
                                                 </>
                                             )}
                                             {lesson.status === 'completed' && (
-                                                <Button size="small" variant="text" startIcon={<CheckCircle />} onClick={() => handleOpenAttendance(lesson)}>
-                                                    Xem lại điểm danh
+                                                <Button size="small" variant="text" color="primary" onClick={() => handleOpenAttendance(lesson)} sx={{ fontWeight: 600 }}>
+                                                    Xem Điểm Danh
                                                 </Button>
                                             )}
                                         </Stack>
@@ -263,7 +316,13 @@ export default function AttendancePage() {
             )}
 
             {/* Attendance Dialog */}
-            <Dialog open={openAttendance} onClose={() => setOpenAttendance(false)} fullWidth maxWidth="xs">
+            <Dialog 
+                open={openAttendance} 
+                onClose={() => setOpenAttendance(false)} 
+                fullWidth 
+                maxWidth="xs"
+                fullScreen={useMediaQuery('(max-width:600px)')}
+            >
                 <DialogTitle sx={{ fontFamily: 'Playfair Display', fontWeight: 700 }}>
                     Điểm danh học sinh
                     <Typography variant="caption" display="block" color="text.secondary">

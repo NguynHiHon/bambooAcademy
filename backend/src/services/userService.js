@@ -232,7 +232,7 @@ const userService = {
     // Update own profile (for authenticated users)
     updateMe: async (userId, data) => {
         try {
-            const { fullName, phone, address, currentPassword, newPassword, newPasswordConfirm } = data;
+            const { fullName, phone, address, avatar, currentPassword, newPassword, newPasswordConfirm } = data;
             const user = await User.findById(userId);
             if (!user) {
                 const err = new Error('USER_NOT_FOUND');
@@ -243,6 +243,7 @@ const userService = {
             // Update allowed fields
             if (fullName !== undefined) user.fullName = fullName;
             if (address !== undefined) user.address = address;
+            if (avatar !== undefined) user.avatar = avatar;
 
 
             if (phone !== undefined) {

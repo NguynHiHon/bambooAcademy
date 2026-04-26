@@ -29,6 +29,11 @@ const lessonService = {
     createLessonFromPlan: async (data) => {
         const res = await axiosJWT.post('/api/lessons/from-plan', data);
         return res.data;
+    },
+
+    getMonthlyReport: async (params = {}) => {
+        const res = await axiosJWT.get('/api/lessons/monthly-report', { params });
+        return res.data;
     }
 };
 

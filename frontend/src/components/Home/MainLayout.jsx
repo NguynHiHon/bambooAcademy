@@ -18,7 +18,7 @@ export default function MainLayout() {
             >
                 <CssBaseline />
                 <Header />
-                <Box component="main" sx={{ flexGrow: 1, py: 4 }}>
+                <Box component="main" sx={{ flexGrow: 1, py: { xs: 2, md: 4 } }}>
                     <Outlet />
                 </Box>
                 <Footer />

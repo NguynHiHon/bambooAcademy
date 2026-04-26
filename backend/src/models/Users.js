@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
     name: { type: String, trim: true },
     fullName: { type: String, trim: true },
     address: { type: String, trim: true },
+    avatar: { type: String, default: '' },
 
     // Account state for admin actions
     state: { type: String, enum: ['active', 'banned', 'suspended'], default: 'active' },

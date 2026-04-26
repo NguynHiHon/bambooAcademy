@@ -5,6 +5,7 @@ const authMiddleWare = require('../middlewares/authMiddleWare');
 const router = express.Router();
 
 router.use(authMiddleWare.verifyAccessToken);
+router.use(authMiddleWare.verifyAdmin);
 
 router.post('/', scoreController.addScore);
 router.get('/class/:classId', scoreController.getScoresByClass);

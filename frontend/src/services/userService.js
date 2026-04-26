@@ -7,6 +7,7 @@ import {
     getUsersListSuccess,
     getUsersListFailure,
 } from '../redux/clices/userSlice';
+import { updateUserInfo } from '../redux/clices/authSlice';
 
 
 const userService = {
@@ -16,6 +17,7 @@ const userService = {
         try {
             const res = await axiosJWT.get('/api/users/me');
             dispatch(getUserProfileSuccess(res.data.userInfo));
+            dispatch(updateUserInfo(res.data.userInfo));
             return res.data.userInfo;
         } catch (error) {
             dispatch(getUserProfileFailure());

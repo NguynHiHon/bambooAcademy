@@ -26,6 +26,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  IconButton
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 import {
@@ -43,6 +44,8 @@ import {
   Home as HomeIcon,
 } from '@mui/icons-material';
 import { toast } from 'sonner';
+import { signOutUser } from '../services/authService';
+import { uploadFileToCloudinary } from '../services/cloudinaryService';
 
 
 // Tab Panel Component
@@ -68,7 +71,9 @@ const ProfilePage = () => {
     fullName: '',
     phone: '',
     address: '',
+    avatar: '',
   });
+  const [previewAvatar, setPreviewAvatar] = useState('');
   const [passwordDialog, setPasswordDialog] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -100,7 +105,9 @@ const ProfilePage = () => {
         fullName: profile.fullName || '',
         phone: profile.phone || '',
         address: profile.address || '',
+        avatar: profile.avatar || '',
       });
+      setPreviewAvatar(profile.avatar || '');
     }
   }, [profile]);
 
@@ -115,6 +122,34 @@ const ProfilePage = () => {
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEditData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // Allow up to 5MB for Cloudinary
+        toast.error('Kích thước ảnh không được vượt quá 5MB');
+        return;
+      }
+      
+      const toastId = toast.loading('Đang tải ảnh lên...');
+      try {
+        const result = await uploadFileToCloudinary(file);
+        setPreviewAvatar(result.secure_url);
+        
+        // Auto-save to database immediately
+        await userService.updateUserProfile({ ...editData, avatar: result.secure_url });
+        
+        setEditData(prev => ({ ...prev, avatar: result.secure_url }));
+        toast.success('Cập nhật ảnh đại diện thành công!', { id: toastId });
+        
+        // Refresh profile to sync globally
+        await handleFetchProfile();
+      } catch (err) {
+        console.error('Upload or save failed:', err);
+        toast.error('Cập nhật thất bại: ' + err.message, { id: toastId });
+      }
+    }
   };
 
   const [isSaving, setIsSaving] = useState(false);
@@ -212,19 +247,54 @@ const ProfilePage = () => {
           {/* Sidebar */}
           <Grid item xs={12} md={4}>
             <Card sx={{ mb: 3 }}>
-              <CardContent sx={{ textAlign: 'center' }}>
-                <Avatar
-                  sx={{
-                    width: 120,
-                    height: 120,
-                    mx: 'auto',
-                    mb: 2,
-                    bgcolor: 'primary.main',
-                    fontSize: '3rem',
-                  }}
-                >
-                  {userProfile?.username?.charAt(0).toUpperCase() || 'U'}
-                </Avatar>
+              <CardContent sx={{ textAlign: 'center', pt: 4 }}>
+                <Box sx={{ position: 'relative', width: 120, height: 120, mx: 'auto', mb: 3 }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="avatar-upload"
+                    hidden
+                    onChange={handleFileChange}
+                  />
+                  <label htmlFor="avatar-upload">
+                    <Avatar
+                      src={previewAvatar}
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        cursor: 'pointer',
+                        bgcolor: 'primary.main',
+                        fontSize: '3rem',
+                        border: '4px solid #fff',
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                        transition: '0.3s',
+                        '&:hover': {
+                          opacity: 0.8,
+                          transform: 'scale(1.05)'
+                        }
+                      }}
+                    >
+                      {userProfile?.username?.charAt(0).toUpperCase() || 'U'}
+                    </Avatar>
+                    <IconButton
+                      component="span"
+                      sx={{
+                        position: 'absolute',
+                        bottom: 0,
+                        right: 0,
+                        bgcolor: '#D4AF37',
+                        color: 'white',
+                        '&:hover': { bgcolor: '#b8962d' },
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                        padding: '8px'
+                      }}
+                    >
+                      <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                        <path d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2z"/>
+                      </svg>
+                    </IconButton>
+                  </label>
+                </Box>
                 <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>
                   {userProfile?.fullName || userProfile?.username || 'Người dùng'}
                 </Typography>

@@ -6,9 +6,12 @@ const router = express.Router();
 
 router.use(authMiddleWare.verifyAccessToken);
 
-router.post('/', courseController.createCourse);
 router.get('/', courseController.getAllCourses);
 router.get('/:id', courseController.getCourse);
+
+// ADMIN ONLY
+router.use(authMiddleWare.verifyAdmin);
+router.post('/', courseController.createCourse);
 router.put('/:id', courseController.updateCourse);
 router.delete('/:id', courseController.deleteCourse);
 

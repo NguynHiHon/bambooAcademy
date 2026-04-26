@@ -5,6 +5,7 @@ const authMiddleWare = require('../middlewares/authMiddleWare');
 const router = express.Router();
 
 router.use(authMiddleWare.verifyAccessToken);
+router.use(authMiddleWare.verifyAdmin);
 
 router.get('/calculate', tuitionController.calculateTuition);
 router.post('/payment', tuitionController.recordPayment);

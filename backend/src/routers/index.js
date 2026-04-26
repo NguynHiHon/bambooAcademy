@@ -10,6 +10,7 @@ const lessonRouter = require('./lessonRouter');
 const timetableRouter = require('./timetableRouter');
 const tuitionRouter = require('./tuitionRouter');
 const scheduleOverrideRouter = require('./scheduleOverrideRouter');
+const cloudinaryRouter = require('./cloudinaryRouter');
 const router = express.Router();
 
 router.use('/auth', authRouter);
@@ -23,6 +24,7 @@ router.use('/lessons', lessonRouter);
 router.use('/timetable', timetableRouter);
 router.use('/tuition', tuitionRouter);
 router.use('/schedule-override', scheduleOverrideRouter);
+router.use('/cloudinary', cloudinaryRouter);
 
 module.exports = router;
 

@@ -5,7 +5,7 @@ import {
     Button, IconButton, Dialog, DialogTitle, DialogContent, 
     DialogActions, Stack, Avatar, Chip, CircularProgress,
     Divider, MenuItem, Select, FormControl, InputLabel,
-    Tooltip, Alert
+    Tooltip, Alert, Card
 } from '@mui/material';
 import { 
     Add, Edit, Delete, Home, School, ContactPhone, 
@@ -256,103 +256,162 @@ const StudentManagement = () => {
                     <CircularProgress color="secondary" />
                 </Box>
             ) : (
-                <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-                    <Table>
-                        <TableHead sx={{ bgcolor: 'rgba(46, 125, 50, 0.05)' }}>
-                            <TableRow>
-                                <TableCell sx={{ fontWeight: 700, color: 'primary.dark' }}>Học sinh</TableCell>
-                                <TableCell sx={{ fontWeight: 700, color: 'primary.dark' }}>Lực học</TableCell>
-                                <TableCell sx={{ fontWeight: 700, color: 'primary.dark' }}>Lớp học</TableCell>
-                                <TableCell sx={{ fontWeight: 700, color: 'primary.dark' }}>Phụ huynh</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, color: 'primary.dark' }}>Thao tác</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredStudents.length === 0 ? (
+                <>
+                    {/* Desktop Table View */}
+                    <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.05)', display: { xs: 'none', md: 'block' }, overflow: 'hidden' }}>
+                        <Table>
+                            <TableHead sx={{ bgcolor: 'rgba(46, 125, 50, 0.05)' }}>
                                 <TableRow>
-                                    <TableCell colSpan={5} align="center" sx={{ py: 5 }}>
-                                        <Info color="disabled" sx={{ fontSize: 40, mb: 1 }} />
-                                        <Typography color="text.secondary">Không tìm thấy học sinh nào</Typography>
-                                    </TableCell>
+                                    <TableCell sx={{ fontWeight: 700, color: 'primary.dark' }}>Học sinh</TableCell>
+                                    <TableCell sx={{ fontWeight: 700, color: 'primary.dark' }}>Lực học</TableCell>
+                                    <TableCell sx={{ fontWeight: 700, color: 'primary.dark' }}>Lớp học</TableCell>
+                                    <TableCell sx={{ fontWeight: 700, color: 'primary.dark' }}>Phụ huynh</TableCell>
+                                    <TableCell align="right" sx={{ fontWeight: 700, color: 'primary.dark' }}>Thao tác</TableCell>
                                 </TableRow>
-                            ) : (
-                                filteredStudents.map((s) => (
-                                    <TableRow key={s._id} hover>
-                                        <TableCell>
-                                            <Stack direction="row" spacing={2} alignItems="center">
-                                                <Avatar sx={{ bgcolor: 'primary.main', fontWeight: 700, width: 45, height: 45 }}>
-                                                    {s.fullName?.[0]?.toUpperCase() || 'S'}
-                                                </Avatar>
+                            </TableHead>
+                            <TableBody>
+                                {filteredStudents.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} align="center" sx={{ py: 5 }}>
+                                            <Info color="disabled" sx={{ fontSize: 40, mb: 1 }} />
+                                            <Typography color="text.secondary">Không tìm thấy học sinh nào</Typography>
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    filteredStudents.map((s) => (
+                                        <TableRow key={s._id} hover>
+                                            <TableCell>
+                                                <Stack direction="row" spacing={2} alignItems="center">
+                                                    <Avatar sx={{ bgcolor: 'primary.main', fontWeight: 700, width: 45, height: 45 }}>
+                                                        {s.fullName?.[0]?.toUpperCase() || 'S'}
+                                                    </Avatar>
+                                                    <Box>
+                                                        <Typography sx={{ fontWeight: 700, fontSize: '0.95rem' }}>{s.fullName || 'Học sinh chưa có tên'}</Typography>
+                                                        <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', mb: 0.2 }}>
+                                                            <Home sx={{ fontSize: 12 }} /> {s.address || 'Chưa có địa chỉ'}
+                                                        </Typography>
+                                                        <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'primary.main', fontWeight: 500 }}>
+                                                            <School sx={{ fontSize: 12 }} /> {s.school || 'Chưa cập nhật trường'}
+                                                        </Typography>
+                                                    </Box>
+                                                </Stack>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Chip 
+                                                    label={s.learningAbility || 'Khá'} 
+                                                    size="small" 
+                                                    sx={{ 
+                                                        bgcolor: 'primary.light', 
+                                                        color: 'primary.dark',
+                                                        fontWeight: 600
+                                                    }} 
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                    {enrollments
+                                                        .filter(e => (e.student?._id || e.student || '').toString() === s._id.toString())
+                                                        .map((e, idx) => (
+                                                            <Tooltip key={idx} title={e.class?.course?.name || 'Thông tin khóa học'}>
+                                                                <Chip 
+                                                                    label={e.class?.name || 'N/A'}
+                                                                    size="small"
+                                                                    variant="outlined"
+                                                                    color="secondary"
+                                                                    sx={{ fontWeight: 500 }}
+                                                                />
+                                                            </Tooltip>
+                                                        ))
+                                                    }
+                                                </Box>
+                                            </TableCell>
+                                            <TableCell>
                                                 <Box>
-                                                    <Typography sx={{ fontWeight: 700, fontSize: '0.95rem' }}>{s.fullName || 'Học sinh chưa có tên'}</Typography>
-                                                    <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', mb: 0.2 }}>
-                                                        <Home sx={{ fontSize: 12 }} /> {s.address || 'Chưa có địa chỉ'}
-                                                    </Typography>
-                                                    <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'primary.main', fontWeight: 500 }}>
-                                                        <School sx={{ fontSize: 12 }} /> {s.school || 'Chưa cập nhật trường'}
+                                                    <Typography variant="body2" sx={{ fontWeight: 500 }}>{s.parentName || 'N/A'}</Typography>
+                                                    <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary' }}>
+                                                        <ContactPhone sx={{ fontSize: 12 }} /> {s.parentPhone || '-'}
                                                     </Typography>
                                                 </Box>
-                                            </Stack>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Chip 
-                                                label={s.learningAbility || 'Khá'} 
-                                                size="small" 
-                                                sx={{ 
-                                                    bgcolor: 'primary.light', 
-                                                    color: 'primary.dark',
-                                                    fontWeight: 600
-                                                }} 
-                                            />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                <Tooltip title="Ghi danh vào lớp">
+                                                    <IconButton onClick={() => handleEnrollOpen(s)} color="secondary" size="small">
+                                                        <PersonAdd fontSize="small" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <IconButton onClick={() => handleOpen(s)} color="primary" size="small">
+                                                    <Edit fontSize="small" />
+                                                </IconButton>
+                                                <IconButton onClick={() => handleDelete(s._id)} color="error" size="small">
+                                                    <Delete fontSize="small" />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                    {/* Mobile Card View */}
+                    <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', gap: 2 }}>
+                        {filteredStudents.length === 0 ? (
+                            <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 3 }}>
+                                <Info color="disabled" sx={{ fontSize: 40, mb: 1 }} />
+                                <Typography color="text.secondary">Không tìm thấy học sinh nào</Typography>
+                            </Paper>
+                        ) : (
+                            filteredStudents.map((s) => (
+                                <Card key={s._id} sx={{ borderRadius: 3, border: '1px solid #eee', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+                                    <Box sx={{ p: 2 }}>
+                                        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                                            <Avatar sx={{ bgcolor: 'primary.main', fontWeight: 700 }}>
+                                                {s.fullName?.[0]?.toUpperCase() || 'S'}
+                                            </Avatar>
+                                            <Box sx={{ flexGrow: 1 }}>
+                                                <Typography sx={{ fontWeight: 700 }}>{s.fullName}</Typography>
+                                                <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>{s.school}</Typography>
+                                            </Box>
+                                            <Chip label={s.learningAbility} size="small" color="primary" variant="outlined" />
+                                        </Stack>
+                                        
+                                        <Divider sx={{ my: 1.5, borderStyle: 'dashed' }} />
+                                        
+                                        <Stack spacing={1} sx={{ mb: 2 }}>
+                                            <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <strong>PH:</strong> {s.parentName} - {s.parentPhone}
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, alignItems: 'center' }}>
+                                                <Typography variant="body2"><strong>Lớp:</strong></Typography>
                                                 {enrollments
-                                                    .filter(e => (e.student?._id || e.student || '').toString() === s._id.toString())
-                                                    .map((e, idx) => (
-                                                        <Tooltip key={idx} title={e.class?.course?.name || 'Thông tin khóa học'}>
-                                                            <Chip 
-                                                                label={e.class?.name || 'N/A'}
-                                                                size="small"
-                                                                variant="outlined"
-                                                                color="secondary"
-                                                                sx={{ fontWeight: 500 }}
-                                                            />
-                                                        </Tooltip>
-                                                    ))
+                                                        .filter(e => (e.student?._id || e.student || '').toString() === s._id.toString())
+                                                        .map((e, idx) => (
+                                                            <Chip key={idx} label={e.class?.name} size="small" sx={{ height: 20 }} />
+                                                        ))
                                                 }
                                                 {enrollments.filter(e => (e.student?._id || e.student || '').toString() === s._id.toString()).length === 0 && (
                                                     <Typography variant="caption" color="text.disabled">Chưa vào lớp</Typography>
                                                 )}
                                             </Box>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Box>
-                                                <Typography variant="body2" sx={{ fontWeight: 500 }}>{s.parentName || 'N/A'}</Typography>
-                                                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary' }}>
-                                                    <ContactPhone sx={{ fontSize: 12 }} /> {s.parentPhone || '-'}
-                                                </Typography>
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Tooltip title="Ghi danh vào lớp">
-                                                <IconButton onClick={() => handleEnrollOpen(s)} color="secondary" size="small">
-                                                    <PersonAdd fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <IconButton onClick={() => handleOpen(s)} color="primary" size="small">
+                                        </Stack>
+
+                                        <Stack direction="row" spacing={1} justifyContent="flex-end">
+                                            <Button size="small" variant="outlined" color="secondary" startIcon={<PersonAdd />} onClick={() => handleEnrollOpen(s)}>
+                                                Ghi danh
+                                            </Button>
+                                            <IconButton size="small" color="primary" onClick={() => handleOpen(s)} sx={{ bgcolor: 'rgba(46, 125, 50, 0.05)' }}>
                                                 <Edit fontSize="small" />
                                             </IconButton>
-                                            <IconButton onClick={() => handleDelete(s._id)} color="error" size="small">
+                                            <IconButton size="small" color="error" onClick={() => handleDelete(s._id)} sx={{ bgcolor: 'rgba(211, 47, 47, 0.05)' }}>
                                                 <Delete fontSize="small" />
                                             </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                                        </Stack>
+                                    </Box>
+                                </Card>
+                            ))
+                        )}
+                    </Box>
+                </>
             )}
 
             {/* Student Info Dialog */}

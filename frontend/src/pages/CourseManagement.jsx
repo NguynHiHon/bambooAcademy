@@ -3,7 +3,7 @@ import {
     Box, Container, Typography, Button, Paper, Table, TableBody,
     TableCell, TableContainer, TableHead, TableRow, IconButton,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField,
-    CircularProgress, Chip, Stack, Card
+    CircularProgress, Chip, Stack, Card, Divider
 } from '@mui/material';
 import { Add, Edit, Delete, School } from '@mui/icons-material';
 import courseService from '../services/courseService';
@@ -85,21 +85,22 @@ export default function CourseManagement() {
     };
 
     return (
-        <Container maxWidth="lg">
-            <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
+            <Box sx={{ mb: { xs: 3, md: 4 }, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 2 }}>
                 <Box>
-                    <Typography variant="h4" color="primary.dark" sx={{ mb: 1 }}>
+                    <Typography variant="h4" color="primary.dark" sx={{ mb: 1, fontWeight: 700, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
                         Quản lý Khóa học
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Tạo và quản lý các chương trình giảng dạy tại BamBoo-Academy
+                        Tạo và quản lý các chương trình giảng dạy.
                     </Typography>
                 </Box>
                 <Button
+                    fullWidth={window.innerWidth < 600}
                     variant="contained"
                     startIcon={<Add />}
                     onClick={() => handleOpen()}
-                    sx={{ borderRadius: 2 }}
+                    sx={{ borderRadius: 2, py: 1 }}
                 >
                     Thêm khóa học mới
                 </Button>
@@ -110,61 +111,109 @@ export default function CourseManagement() {
                     <CircularProgress color="secondary" />
                 </Box>
             ) : (
-                <TableContainer component={Paper} sx={{ border: 'none' }}>
-                    <Table>
-                        <TableHead sx={{ bgcolor: 'primary.light', opacity: 0.1 }}>
-                            <TableRow>
-                                <TableCell sx={{ fontWeight: 700 }}>Tên khóa học</TableCell>
-                                <TableCell sx={{ fontWeight: 700 }}>Mô tả</TableCell>
-                                <TableCell sx={{ fontWeight: 700 }}>Học phí / Buổi</TableCell>
-                                <TableCell sx={{ fontWeight: 700 }}>Trạng thái</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700 }}>Thao tác</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {courses.length === 0 ? (
+                <>
+                    {/* Desktop Table */}
+                    <TableContainer component={Paper} sx={{ display: { xs: 'none', md: 'block' }, border: '1px solid #eee', boxShadow: 'none', borderRadius: 3, overflow: 'hidden' }}>
+                        <Table>
+                            <TableHead sx={{ bgcolor: '#f9f9f9' }}>
                                 <TableRow>
-                                    <TableCell colSpan={5} align="center" sx={{ py: 5 }}>
-                                        <Typography color="text.secondary">Chưa có khóa học nào</Typography>
-                                    </TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Tên khóa học</TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Mô tả</TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Học phí / Buổi</TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Trạng thái</TableCell>
+                                    <TableCell align="right" sx={{ fontWeight: 700 }}>Thao tác</TableCell>
                                 </TableRow>
-                            ) : (
-                                courses.map((course) => (
-                                    <TableRow key={course._id} hover>
-                                        <TableCell sx={{ fontWeight: 600, color: 'primary.dark' }}>
-                                            <Stack direction="row" spacing={2} alignItems="center">
-                                                <School fontSize="small" />
-                                                {course.name}
-                                            </Stack>
+                            </TableHead>
+                            <TableBody>
+                                {courses.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} align="center" sx={{ py: 5 }}>
+                                            <Typography color="text.secondary">Chưa có khóa học nào</Typography>
                                         </TableCell>
-                                        <TableCell>{course.description || '-'}</TableCell>
-                                        <TableCell>
-                                            <Typography sx={{ fontWeight: 700, color: 'secondary.dark' }}>
-                                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(course.feePerLesson)}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
+                                    </TableRow>
+                                ) : (
+                                    courses.map((course) => (
+                                        <TableRow key={course._id} hover>
+                                            <TableCell sx={{ fontWeight: 600 }}>
+                                                <Stack direction="row" spacing={1.5} alignItems="center">
+                                                    <School fontSize="small" color="primary" />
+                                                    {course.name}
+                                                </Stack>
+                                            </TableCell>
+                                            <TableCell sx={{ color: 'text.secondary', maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                {course.description || '-'}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography sx={{ fontWeight: 700, color: 'secondary.dark' }}>
+                                                    {course.feePerLesson?.toLocaleString()} đ
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    label={course.status === 'active' ? 'Đang mở' : 'Lưu trữ'}
+                                                    color={course.status === 'active' ? 'success' : 'default'}
+                                                    size="small"
+                                                    variant="outlined"
+                                                />
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                <IconButton onClick={() => handleOpen(course)} color="primary" size="small">
+                                                    <Edit fontSize="small" />
+                                                </IconButton>
+                                                <IconButton onClick={() => handleDelete(course._id)} color="error" size="small">
+                                                    <Delete fontSize="small" />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                    {/* Mobile Card List */}
+                    <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', gap: 2 }}>
+                        {courses.length === 0 ? (
+                            <Typography sx={{ textAlign: 'center', py: 5, color: 'text.secondary' }}>Chưa có khóa học nào.</Typography>
+                        ) : (
+                            courses.map((course) => (
+                                <Card key={course._id} sx={{ borderRadius: 3, border: '1px solid #eee', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+                                    <Box sx={{ p: 2 }}>
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
+                                            <Box>
+                                                <Typography variant="subtitle1" fontWeight={700} color="primary.main">{course.name}</Typography>
+                                                <Typography variant="body2" sx={{ fontWeight: 700, color: 'secondary.dark', mt: 0.5 }}>
+                                                    {course.feePerLesson?.toLocaleString()} đ/buổi
+                                                </Typography>
+                                            </Box>
                                             <Chip
                                                 label={course.status === 'active' ? 'Đang mở' : 'Lưu trữ'}
                                                 color={course.status === 'active' ? 'success' : 'default'}
                                                 size="small"
-                                                variant="outlined"
+                                                sx={{ height: 20, fontSize: '0.65rem' }}
                                             />
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <IconButton onClick={() => handleOpen(course)} color="primary" size="small">
+                                        </Box>
+                                        
+                                        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2, fontSize: '0.85rem' }}>
+                                            {course.description || 'Không có mô tả cho khóa học này.'}
+                                        </Typography>
+
+                                        <Divider sx={{ mb: 2 }} />
+
+                                        <Stack direction="row" spacing={1} justifyContent="flex-end">
+                                            <IconButton size="small" onClick={() => handleOpen(course)} color="primary" sx={{ border: '1px solid', borderColor: 'primary.light' }}>
                                                 <Edit fontSize="small" />
                                             </IconButton>
-                                            <IconButton onClick={() => handleDelete(course._id)} color="error" size="small">
+                                            <IconButton size="small" onClick={() => handleDelete(course._id)} color="error" sx={{ border: '1px solid', borderColor: 'error.light' }}>
                                                 <Delete fontSize="small" />
                                             </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                                        </Stack>
+                                    </Box>
+                                </Card>
+                            ))
+                        )}
+                    </Box>
+                </>
             )}
 
             {/* Create/Edit Dialog */}

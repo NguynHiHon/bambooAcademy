@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
     Box, Typography, Container, Paper, IconButton, Stack,
     Chip, Dialog, DialogTitle, DialogContent, DialogActions,
-    Button, TextField, Tooltip, Alert, FormControl, InputLabel, Select, MenuItem, Divider
+    Button, TextField, Tooltip, Alert, FormControl, InputLabel, Select, MenuItem, Divider,
+    useMediaQuery
 } from '@mui/material';
 import Grid from '@mui/material/GridLegacy';
 import {
@@ -247,17 +248,19 @@ export default function HomePage() {
         return weekStart.getTime() === mondayOfThisWeek.getTime() && today.getDay() === dayOfWeek;
     };
 
+    const isMobile = useMediaQuery('(max-width:900px)');
+
     if (!isAuthenticated) {
         return (
-            <Box sx={{ background: `linear-gradient(135deg, ${COLORS.bgMain} 0%, #FFFFFF 100%)`, pt: 8, pb: 12, minHeight: '80vh' }}>
+            <Box sx={{ background: `linear-gradient(135deg, ${COLORS.bgMain} 0%, #FFFFFF 100%)`, pt: { xs: 4, md: 8 }, pb: { xs: 6, md: 12 }, minHeight: '80vh' }}>
                 <Container maxWidth="lg" sx={{ textAlign: 'center' }}>
-                    <Typography variant="h1" sx={{ fontSize: { xs: '3rem', md: '4.5rem' }, color: COLORS.textDark, mb: 2, fontFamily: 'Playfair Display', fontWeight: 700 }}>
+                    <Typography variant="h1" sx={{ fontSize: { xs: '2.5rem', md: '4.5rem' }, color: COLORS.textDark, mb: 2, fontFamily: 'Playfair Display', fontWeight: 700 }}>
                         BamBoo<span style={{ color: COLORS.primary }}>-Academy</span>
                     </Typography>
-                    <Typography variant="h5" sx={{ color: COLORS.textMuted, mb: 5, fontWeight: 500 }}>
+                    <Typography variant="h5" sx={{ color: COLORS.textMuted, mb: 5, fontWeight: 500, fontSize: { xs: '1rem', md: '1.5rem' }, px: 2 }}>
                         Hệ thống quản lý lớp học chuyên nghiệp và tinh tế
                     </Typography>
-                    <Stack direction="row" spacing={3} justifyContent="center">
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center" sx={{ px: 4 }}>
                         <Button component={Link} to="/signin" variant="contained" size="large" sx={{ px: 5, py: 1.5, borderRadius: 1, bgcolor: COLORS.primary, '&:hover': { bgcolor: '#9A5B64' }, fontSize: '1.1rem', disableElevation: true }}>
                             Đăng nhập
                         </Button>
@@ -271,47 +274,47 @@ export default function HomePage() {
     }
 
     return (
-        <Container maxWidth="xl" sx={{ py: 5 }}>
+        <Container maxWidth="xl" sx={{ py: { xs: 2, md: 5 } }}>
             {/* TỔNG QUAN (DASHBOARD) */}
-            <Box sx={{ mb: 5 }}>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: COLORS.textDark, mb: 1, fontFamily: 'Playfair Display' }}>
-                    Xin chào Cô giáo xinh đẹp {currentUser?.fullName || 'Thanh Trúc'}! 💖
+            <Box sx={{ mb: { xs: 3, md: 5 } }}>
+                <Typography variant="h4" sx={{ fontWeight: 700, color: COLORS.textDark, mb: 1, fontFamily: 'Playfair Display', fontSize: { xs: '1.4rem', md: '2.125rem' } }}>
+                    Xin chào {currentUser?.fullName || 'Thanh Trúc'}! 💖
                 </Typography>
-                <Typography variant="body1" sx={{ color: COLORS.textMuted, mb: 4, fontWeight: 500, fontSize: '1.05rem' }}>
-                    Hôm nay cô có mệt không? Cùng xem qua lớp học nhỏ của chúng mình nhé! 🌸
+                <Typography variant="body1" sx={{ color: COLORS.textMuted, mb: 3, fontWeight: 500, fontSize: { xs: '0.9rem', md: '1.05rem' } }}>
+                    Hôm nay cô có mệt không? Cùng xem qua lớp học nhé! 🌸
                 </Typography>
 
-                <Grid container spacing={3}>
-                    <Grid item xs={12} md={4}>
-                        <Paper sx={{ p: 3, borderRadius: 2, display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${COLORS.border}`, boxShadow: 'none' }}>
+                <Grid container spacing={{ xs: 2, md: 3 }}>
+                    <Grid item xs={12} sm={4}>
+                        <Paper sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${COLORS.border}`, boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
                             <Box sx={{ p: 1.5, bgcolor: '#FAF0F3', borderRadius: 2 }}>
-                                <People sx={{ color: COLORS.primary, fontSize: 32 }} />
+                                <People sx={{ color: COLORS.primary, fontSize: { xs: 24, md: 32 } }} />
                             </Box>
                             <Box>
-                                <Typography variant="h4" sx={{ fontWeight: 700, color: COLORS.textDark }}>{stats.students}</Typography>
-                                <Typography variant="body2" sx={{ color: COLORS.textMuted, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>Học sinh</Typography>
+                                <Typography variant="h4" sx={{ fontWeight: 700, color: COLORS.textDark, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>{stats.students}</Typography>
+                                <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, textTransform: 'uppercase' }}>Học sinh</Typography>
                             </Box>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                        <Paper sx={{ p: 3, borderRadius: 2, display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${COLORS.border}`, boxShadow: 'none' }}>
+                    <Grid item xs={12} sm={4}>
+                        <Paper sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${COLORS.border}`, boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
                             <Box sx={{ p: 1.5, bgcolor: '#FDF3F4', borderRadius: 2 }}>
-                                <Class sx={{ color: '#C88E91', fontSize: 32 }} />
+                                <Class sx={{ color: '#C88E91', fontSize: { xs: 24, md: 32 } }} />
                             </Box>
                             <Box>
-                                <Typography variant="h4" sx={{ fontWeight: 700, color: COLORS.textDark }}>{stats.classes}</Typography>
-                                <Typography variant="body2" sx={{ color: COLORS.textMuted, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>Lớp học</Typography>
+                                <Typography variant="h4" sx={{ fontWeight: 700, color: COLORS.textDark, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>{stats.classes}</Typography>
+                                <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, textTransform: 'uppercase' }}>Lớp học</Typography>
                             </Box>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                        <Paper sx={{ p: 3, borderRadius: 2, display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${COLORS.border}`, boxShadow: 'none' }}>
+                    <Grid item xs={12} sm={4}>
+                        <Paper sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, display: 'flex', alignItems: 'center', gap: 2, border: `1px solid ${COLORS.border}`, boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
                             <Box sx={{ p: 1.5, bgcolor: '#F4EDF0', borderRadius: 2 }}>
-                                <AutoStories sx={{ color: '#A67C8E', fontSize: 32 }} />
+                                <AutoStories sx={{ color: '#A67C8E', fontSize: { xs: 24, md: 32 } }} />
                             </Box>
                             <Box>
-                                <Typography variant="h4" sx={{ fontWeight: 700, color: COLORS.textDark }}>{stats.courses}</Typography>
-                                <Typography variant="body2" sx={{ color: COLORS.textMuted, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>Khóa học</Typography>
+                                <Typography variant="h4" sx={{ fontWeight: 700, color: COLORS.textDark, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>{stats.courses}</Typography>
+                                <Typography variant="caption" sx={{ color: COLORS.textMuted, fontWeight: 700, textTransform: 'uppercase' }}>Khóa học</Typography>
                             </Box>
                         </Paper>
                     </Grid>
@@ -319,185 +322,175 @@ export default function HomePage() {
             </Box>
 
             {/* HEADER THỜI KHÓA BIỂU */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'flex-start', md: 'flex-end' }, mb: 3, flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
                 <Box>
-                    <Typography variant="h5" sx={{ fontWeight: 700, color: COLORS.textDark, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="h5" sx={{ fontWeight: 700, color: COLORS.textDark, mb: 0.5, display: 'flex', alignItems: 'center', gap: 1, fontSize: { xs: '1.2rem', md: '1.5rem' } }}>
                         <CalendarMonth sx={{ color: COLORS.primary }} /> Thời khóa biểu
                     </Typography>
-                    <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
-                        Click vào lịch để dời/hủy. Các ô trống có thể click để sắp xếp lịch dạy bù.
+                    <Typography variant="caption" sx={{ color: COLORS.textMuted, display: { xs: 'none', sm: 'block' } }}>
+                        Click vào lịch để dời/hủy. Ô trống click để dạy bù.
                     </Typography>
                 </Box>
 
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ bgcolor: COLORS.bgCard, p: 0.5, borderRadius: 1, border: `1px solid ${COLORS.border}` }}>
-                    <IconButton onClick={() => changeWeek(-1)} size="small" sx={{ color: COLORS.primary, borderRadius: 1 }}><ChevronLeft /></IconButton>
-                    <Typography variant="body2" sx={{ fontWeight: 600, px: 2, minWidth: 140, textAlign: 'center', color: COLORS.textDark }}>
+                <Stack direction="row" spacing={0.5} alignItems="center" sx={{ bgcolor: COLORS.bgCard, p: 0.5, borderRadius: 2, border: `1px solid ${COLORS.border}`, width: { xs: '100%', md: 'auto' }, justifyContent: 'space-between' }}>
+                    <IconButton onClick={() => changeWeek(-1)} size="small" sx={{ color: COLORS.primary }}><ChevronLeft /></IconButton>
+                    <Typography variant="body2" sx={{ fontWeight: 700, px: 1, textAlign: 'center', color: COLORS.textDark }}>
                         {formatWeekRange(weekStart)}
                     </Typography>
-                    <IconButton onClick={() => changeWeek(1)} size="small" sx={{ color: COLORS.primary, borderRadius: 1 }}><ChevronRight /></IconButton>
-                    <Divider orientation="vertical" flexItem sx={{ mx: 1, borderColor: COLORS.border }} />
-                    <Tooltip title="Về tuần hiện tại">
-                        <IconButton onClick={() => setWeekStart(getMonday(new Date()))} size="small" sx={{ color: COLORS.primary, borderRadius: 1 }}>
-                            <Today />
-                        </IconButton>
-                    </Tooltip>
+                    <IconButton onClick={() => changeWeek(1)} size="small" sx={{ color: COLORS.primary }}><ChevronRight /></IconButton>
+                    <IconButton onClick={() => setWeekStart(getMonday(new Date()))} size="small" sx={{ color: COLORS.primary }}>
+                        <Today fontSize="small" />
+                    </IconButton>
                 </Stack>
             </Box>
 
-            {/* CHÚ THÍCH */}
-            <Stack direction="row" spacing={3} sx={{ mb: 2, px: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ width: 14, height: 14, bgcolor: COLORS.statusDefault.bg, border: `1px solid ${COLORS.statusDefault.border}`, borderRadius: '2px' }} />
-                    <Typography variant="caption" color="text.secondary">Mặc định</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ width: 14, height: 14, bgcolor: COLORS.statusMakeup.bg, border: `1px solid ${COLORS.statusMakeup.border}`, borderRadius: '2px' }} />
-                    <Typography variant="caption" color="text.secondary">Dạy bù</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ width: 14, height: 14, bgcolor: COLORS.statusRescheduled.bg, border: `1px solid ${COLORS.statusRescheduled.border}`, borderRadius: '2px' }} />
-                    <Typography variant="caption" color="text.secondary">Đã dời đi</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ width: 14, height: 14, bgcolor: COLORS.statusCancelled.bg, border: `1px solid ${COLORS.statusCancelled.border}`, borderRadius: '2px' }} />
-                    <Typography variant="caption" color="text.secondary">Đã hủy</Typography>
-                </Box>
-            </Stack>
-
-            {/* BẢNG LỊCH CHUYÊN NGHIỆP - ROSE GOLD TONE */}
-            <Paper sx={{ border: `1px solid ${COLORS.border}`, borderRadius: 2, overflow: 'hidden', boxShadow: 'none' }}>
-                <Box sx={{ overflowX: 'auto' }}>
-                    <Box sx={{ display: 'grid', gridTemplateColumns: '80px repeat(7, 1fr)', minWidth: 1000 }}>
-                        {/* Header Row */}
-                        <Box sx={{ p: 2, bgcolor: COLORS.bgMain, borderBottom: `2px solid ${COLORS.border}`, borderRight: `1px solid ${COLORS.border}` }} />
-                        {DAYS_ORDER.map(d => (
-                            <Box key={d} sx={{
-                                p: 1.5,
-                                bgcolor: isToday(d) ? COLORS.primaryLight : COLORS.bgMain,
-                                borderBottom: '2px solid',
-                                borderBottomColor: isToday(d) ? COLORS.primary : COLORS.border,
-                                borderRight: d !== 0 ? `1px solid ${COLORS.border}` : 'none',
-                                textAlign: 'center',
-                                transition: 'background-color 0.3s'
-                            }}>
-                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: isToday(d) ? COLORS.textDark : COLORS.textDark }}>
-                                    {DAYS_LABEL[d]}
-                                </Typography>
-                                <Typography variant="caption" sx={{ color: isToday(d) ? COLORS.textDark : COLORS.textMuted, fontWeight: isToday(d) ? 600 : 400 }}>
-                                    {getDayDate(d)}
-                                </Typography>
-                            </Box>
-                        ))}
-
-                        {/* Period Rows */}
-                        {PERIODS.map((period, pIndex) => (
-                            <React.Fragment key={period.value}>
-                                {/* Lable Buổi */}
-                                <Box sx={{
+            {/* BẢNG LỊCH CHUYÊN NGHIỆP */}
+            {!isMobile ? (
+                <Paper sx={{ border: `1px solid ${COLORS.border}`, borderRadius: 2, overflow: 'hidden', boxShadow: 'none' }}>
+                    <Box sx={{ overflowX: 'auto' }}>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: '80px repeat(7, 1fr)', minWidth: 1000 }}>
+                            {/* Header Row */}
+                            <Box sx={{ p: 2, bgcolor: COLORS.bgMain, borderBottom: `2px solid ${COLORS.border}`, borderRight: `1px solid ${COLORS.border}` }} />
+                            {DAYS_ORDER.map(d => (
+                                <Box key={d} sx={{
                                     p: 1.5,
-                                    bgcolor: '#FAF5F6',
-                                    borderRight: `1px solid ${COLORS.border}`,
-                                    borderBottom: pIndex < PERIODS.length - 1 ? `1px solid ${COLORS.border}` : 'none',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
+                                    bgcolor: isToday(d) ? COLORS.primaryLight : COLORS.bgMain,
+                                    borderBottom: '2px solid',
+                                    borderBottomColor: isToday(d) ? COLORS.primary : COLORS.border,
+                                    borderRight: d !== 0 ? `1px solid ${COLORS.border}` : 'none',
+                                    textAlign: 'center'
                                 }}>
-                                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#9A808C', letterSpacing: 1, writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
-                                        {period.label}
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: COLORS.textDark }}>
+                                        {DAYS_LABEL[d]}
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ color: isToday(d) ? COLORS.textDark : COLORS.textMuted }}>
+                                        {getDayDate(d)}
                                     </Typography>
                                 </Box>
+                            ))}
 
-                                {/* Day Cells */}
-                                {DAYS_ORDER.map((d, dIndex) => {
-                                    const cellItems = gridData[period.value]?.[d] || [];
-                                    const isEmpty = cellItems.length === 0;
-                                    const hasCancelled = cancelledSlots.length > 0;
+                            {/* Period Rows */}
+                            {PERIODS.map((period, pIndex) => (
+                                <React.Fragment key={period.value}>
+                                    <Box sx={{
+                                        p: 1.5,
+                                        bgcolor: '#FAF5F6',
+                                        borderRight: `1px solid ${COLORS.border}`,
+                                        borderBottom: pIndex < PERIODS.length - 1 ? `1px solid ${COLORS.border}` : 'none',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                    }}>
+                                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#9A808C', letterSpacing: 1, writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+                                            {period.label}
+                                        </Typography>
+                                    </Box>
 
-                                    return (
-                                        <Box
-                                            key={`${period.value}-${d}`}
-                                            onClick={() => isEmpty && hasCancelled && handleEmptyCellClick(d, period.value)}
-                                            sx={{
-                                                p: 1,
-                                                minHeight: 130,
-                                                bgcolor: isToday(d) ? '#FFFDFD' : COLORS.bgCard,
-                                                borderRight: dIndex < 6 ? `1px solid ${COLORS.border}` : 'none',
-                                                borderBottom: pIndex < PERIODS.length - 1 ? `1px solid ${COLORS.border}` : 'none',
-                                                cursor: (isEmpty && hasCancelled) ? 'pointer' : 'default',
-                                                transition: 'all 0.2s',
-                                                position: 'relative',
-                                                '&:hover': {
-                                                    bgcolor: (isEmpty && hasCancelled) ? '#FDF9FA' : '#FAFAFA'
-                                                }
-                                            }}
-                                        >
-                                            {isEmpty && hasCancelled && (
-                                                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0, transition: 'opacity 0.2s', '.MuiBox-root:hover > &': { opacity: 0.5 } }}>
-                                                    <Add sx={{ fontSize: 30, color: COLORS.primaryLight }} />
-                                                </Box>
-                                            )}
-                                            
-                                            <Stack spacing={1}>
-                                                {cellItems.map((item, idx) => {
-                                                    let theme = COLORS.statusDefault;
-                                                    let isStrike = false;
-                                                    let chipText = null;
+                                    {DAYS_ORDER.map((d, dIndex) => {
+                                        const cellItems = gridData[period.value]?.[d] || [];
+                                        const isEmpty = cellItems.length === 0;
+                                        const hasCancelled = cancelledSlots.length > 0;
 
-                                                    if (item.type === 'rescheduled_to') {
-                                                        theme = COLORS.statusMakeup;
-                                                        chipText = item.fromWeek ? `Bù từ ${formatDate(new Date(item.fromWeek))}` : 'Bù';
-                                                    } else if (item.type === 'cancelled') {
-                                                        theme = COLORS.statusCancelled;
-                                                        isStrike = true;
-                                                        chipText = 'Đã hủy';
-                                                    } else if (item.type === 'rescheduled_from') {
-                                                        theme = COLORS.statusRescheduled;
-                                                        isStrike = true;
-                                                        chipText = item.movedToWeek ? `Dời sang ${formatDate(new Date(item.movedToWeek))}` : 'Đã dời';
-                                                    }
+                                        return (
+                                            <Box
+                                                key={`${period.value}-${d}`}
+                                                onClick={() => isEmpty && hasCancelled && handleEmptyCellClick(d, period.value)}
+                                                sx={{
+                                                    p: 1, minHeight: 130, bgcolor: isToday(d) ? '#FFFDFD' : COLORS.bgCard,
+                                                    borderRight: dIndex < 6 ? `1px solid ${COLORS.border}` : 'none',
+                                                    borderBottom: pIndex < PERIODS.length - 1 ? `1px solid ${COLORS.border}` : 'none',
+                                                    cursor: (isEmpty && hasCancelled) ? 'pointer' : 'default',
+                                                    '&:hover': { bgcolor: (isEmpty && hasCancelled) ? '#FDF9FA' : '#FAFAFA' }
+                                                }}
+                                            >
+                                                <Stack spacing={1}>
+                                                    {cellItems.map((item, idx) => {
+                                                        let theme = COLORS.statusDefault;
+                                                        let isStrike = false;
+                                                        if (item.type === 'rescheduled_to') theme = COLORS.statusMakeup;
+                                                        else if (item.type === 'cancelled') { theme = COLORS.statusCancelled; isStrike = true; }
+                                                        else if (item.type === 'rescheduled_from') { theme = COLORS.statusRescheduled; isStrike = true; }
 
-                                                    return (
-                                                        <Box
-                                                            key={idx}
-                                                            onClick={(e) => { e.stopPropagation(); handleSlotClick(item); }}
-                                                            sx={{
-                                                                p: 1.2,
-                                                                bgcolor: theme.bg,
-                                                                border: '1px solid',
-                                                                borderColor: 'rgba(0,0,0,0.03)',
-                                                                borderLeft: `4px solid ${theme.border}`,
-                                                                borderRadius: 1,
-                                                                cursor: 'pointer',
-                                                                transition: 'transform 0.1s',
-                                                                '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 8px rgba(183, 110, 121, 0.1)' }
-                                                            }}
-                                                        >
-                                                            <Typography variant="subtitle2" sx={{ color: theme.text, fontWeight: 700, mb: 0.5, textDecoration: isStrike ? 'line-through' : 'none', lineHeight: 1.2 }}>
-                                                                {item.className}
-                                                            </Typography>
-                                                            <Typography variant="caption" sx={{ color: theme.text, opacity: 0.8, display: 'flex', alignItems: 'center', gap: 0.5, fontWeight: 500 }}>
-                                                                <AccessTime sx={{ fontSize: 12 }} /> {item.time}
-                                                            </Typography>
-                                                            
-                                                            {chipText && (
-                                                                <Box sx={{ mt: 1 }}>
-                                                                    <Typography variant="caption" sx={{ bgcolor: theme.border, color: '#fff', px: 0.8, py: 0.2, borderRadius: 1, fontSize: '0.65rem', fontWeight: 600 }}>
-                                                                        {chipText}
-                                                                    </Typography>
-                                                                </Box>
-                                                            )}
-                                                        </Box>
-                                                    );
-                                                })}
-                                            </Stack>
-                                        </Box>
-                                    );
-                                })}
-                            </React.Fragment>
-                        ))}
+                                                        return (
+                                                            <Box
+                                                                key={idx}
+                                                                onClick={(e) => { e.stopPropagation(); handleSlotClick(item); }}
+                                                                sx={{
+                                                                    p: 1, bgcolor: theme.bg, borderLeft: `4px solid ${theme.border}`, borderRadius: 1, cursor: 'pointer',
+                                                                    '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 8px rgba(0,0,0,0.05)' }
+                                                                }}
+                                                            >
+                                                                <Typography variant="subtitle2" sx={{ color: theme.text, fontWeight: 700, mb: 0.2, textDecoration: isStrike ? 'line-through' : 'none', fontSize: '0.8rem' }}>
+                                                                    {item.className}
+                                                                </Typography>
+                                                                <Typography variant="caption" sx={{ color: theme.text, display: 'flex', alignItems: 'center', gap: 0.5, fontSize: '0.7rem' }}>
+                                                                    <AccessTime sx={{ fontSize: 10 }} /> {item.time}
+                                                                </Typography>
+                                                            </Box>
+                                                        );
+                                                    })}
+                                                </Stack>
+                                            </Box>
+                                        );
+                                    })}
+                                </React.Fragment>
+                            ))}
+                        </Box>
                     </Box>
-                </Box>
-            </Paper>
+                </Paper>
+            ) : (
+                /* MOBILE VIEW: Danh sách theo ngày */
+                <Stack spacing={2}>
+                    {DAYS_ORDER.map(d => {
+                        const daySlots = [];
+                        PERIODS.forEach(p => {
+                            if (gridData[p.value][d]) daySlots.push(...gridData[p.value][d]);
+                        });
+
+                        return (
+                            <Paper key={d} sx={{ p: 2, borderRadius: 3, border: `1px solid ${isToday(d) ? COLORS.primary : COLORS.border}`, bgcolor: isToday(d) ? '#FFFDFD' : '#fff' }}>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1.5, color: isToday(d) ? COLORS.primary : COLORS.textDark, display: 'flex', justifyContent: 'space-between' }}>
+                                    {DAYS_LABEL[d]} - {getDayDate(d)}
+                                    {isToday(d) && <Chip label="Hôm nay" size="small" sx={{ height: 20, bgcolor: COLORS.primary, color: '#fff', fontWeight: 700, fontSize: '0.6rem' }} />}
+                                </Typography>
+                                
+                                <Stack spacing={1.5}>
+                                    {daySlots.length === 0 ? (
+                                        <Typography variant="caption" color="text.disabled">Không có lớp học</Typography>
+                                    ) : (
+                                        daySlots.map((item, idx) => {
+                                            let theme = COLORS.statusDefault;
+                                            let isStrike = false;
+                                            if (item.type === 'rescheduled_to') theme = COLORS.statusMakeup;
+                                            else if (item.type === 'cancelled') { theme = COLORS.statusCancelled; isStrike = true; }
+                                            else if (item.type === 'rescheduled_from') { theme = COLORS.statusRescheduled; isStrike = true; }
+
+                                            return (
+                                                <Box
+                                                    key={idx}
+                                                    onClick={() => handleSlotClick(item)}
+                                                    sx={{
+                                                        p: 1.5, bgcolor: theme.bg, borderLeft: `5px solid ${theme.border}`, borderRadius: 2,
+                                                        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                                                    }}
+                                                >
+                                                    <Box>
+                                                        <Typography variant="body2" sx={{ fontWeight: 700, textDecoration: isStrike ? 'line-through' : 'none' }}>
+                                                            {item.className}
+                                                        </Typography>
+                                                        <Typography variant="caption" color="text.secondary">
+                                                            {PERIODS.find(p => p.value === item.period)?.label}: {item.time}
+                                                        </Typography>
+                                                    </Box>
+                                                    <ChevronRight sx={{ color: theme.border, opacity: 0.5 }} />
+                                                </Box>
+                                            )
+                                        })
+                                    )}
+                                </Stack>
+                            </Paper>
+                        );
+                    })}
+                </Stack>
+            )}
 
             {/* === DIALOGS === */}
             <Dialog open={actionDialog.open} onClose={closeActionDialog} maxWidth="xs" fullWidth>

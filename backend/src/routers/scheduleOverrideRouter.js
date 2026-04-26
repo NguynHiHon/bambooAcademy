@@ -6,8 +6,11 @@ const router = express.Router();
 
 router.use(authMiddleWare.verifyAccessToken);
 
-// Lấy lịch tổng hợp theo tuần
+// Lấy lịch tổng hợp theo tuần (User thường được xem)
 router.get('/week', scheduleOverrideController.getWeekSchedule);
+
+// CÁC THAO TÁC DƯỚI ĐÂY BẮT BUỘC ADMIN
+router.use(authMiddleWare.verifyAdmin);
 
 // Hủy buổi dạy
 router.post('/cancel', scheduleOverrideController.cancelSlot);

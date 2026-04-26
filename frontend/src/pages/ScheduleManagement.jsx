@@ -114,22 +114,22 @@ export default function ScheduleManagement() {
     };
 
     return (
-        <Container maxWidth="lg">
-            <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" color="primary.dark" sx={{ mb: 1, fontWeight: 700 }}>
-                    Xếp lịch dạy (Thời khóa biểu)
+        <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
+            <Box sx={{ mb: { xs: 2, md: 4 } }}>
+                <Typography variant="h4" color="primary.dark" sx={{ mb: 1, fontWeight: 700, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
+                    Xếp lịch dạy
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    Thiết lập lịch dạy cố định hàng tuần để hệ thống tự động tạo các buổi học.
+                    Thiết lập lịch dạy cố định hàng tuần.
                 </Typography>
             </Box>
 
-            <Grid container spacing={4}>
+            <Grid container spacing={{ xs: 2, md: 4 }}>
                 <Grid item xs={12} md={4}>
-                    <Card sx={{ border: '1px solid #eee', boxShadow: 'none', borderRadius: 2 }}>
-                        <Box sx={{ p: 3 }}>
-                            <Typography variant="h6" sx={{ mb: 3, fontWeight: 700 }}>Thiết lập mới</Typography>
-                            <Stack spacing={3}>
+                    <Card sx={{ border: '1px solid #eee', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', borderRadius: 3 }}>
+                        <Box sx={{ p: { xs: 2, md: 3 } }}>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>Thiết lập mới</Typography>
+                            <Stack spacing={2.5}>
                                 <FormControl fullWidth>
                                     <InputLabel>Chọn lớp học</InputLabel>
                                     <Select
@@ -143,39 +143,40 @@ export default function ScheduleManagement() {
                                 
                                 <Divider />
                                 
-                                <FormControl fullWidth size="small">
-                                    <InputLabel>Thứ trong tuần</InputLabel>
-                                    <Select
-                                        value={newSlot.dayOfWeek}
-                                        label="Thứ trong tuần"
-                                        onChange={(e) => setNewSlot({ ...newSlot, dayOfWeek: e.target.value })}
-                                    >
-                                        {DAYS_MAP.map(day => <MenuItem key={day.value} value={day.value}>{day.label}</MenuItem>)}
-                                    </Select>
-                                </FormControl>
+                                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel>Thứ</InputLabel>
+                                        <Select
+                                            value={newSlot.dayOfWeek}
+                                            label="Thứ"
+                                            onChange={(e) => setNewSlot({ ...newSlot, dayOfWeek: e.target.value })}
+                                        >
+                                            {DAYS_MAP.map(day => <MenuItem key={day.value} value={day.value}>{day.label}</MenuItem>)}
+                                        </Select>
+                                    </FormControl>
 
-                                <FormControl fullWidth size="small">
-                                    <InputLabel>Buổi dạy</InputLabel>
-                                    <Select
-                                        value={newSlot.period}
-                                        label="Buổi dạy"
-                                        onChange={(e) => setNewSlot({ ...newSlot, period: e.target.value })}
-                                    >
-                                        {PERIODS.map(p => <MenuItem key={p.value} value={p.value}>{p.label}</MenuItem>)}
-                                    </Select>
-                                </FormControl>
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel>Buổi</InputLabel>
+                                        <Select
+                                            value={newSlot.period}
+                                            label="Buổi"
+                                            onChange={(e) => setNewSlot({ ...newSlot, period: e.target.value })}
+                                        >
+                                            {PERIODS.map(p => <MenuItem key={p.value} value={p.value}>{p.label}</MenuItem>)}
+                                        </Select>
+                                    </FormControl>
+                                </Stack>
 
                                 <TextField
-                                    label="Giờ học (VD: 14h30 - 16h30)"
+                                    label="Giờ học (VD: 14h-16h)"
                                     fullWidth
                                     size="small"
                                     value={newSlot.defaultTime}
                                     onChange={(e) => setNewSlot({ ...newSlot, defaultTime: e.target.value })}
-                                    placeholder="Nhập thời gian dạy..."
                                 />
 
                                 <TextField
-                                    label="Bắt đầu áp dụng từ ngày"
+                                    label="Ngày bắt đầu"
                                     type="date"
                                     fullWidth
                                     size="small"
@@ -186,7 +187,6 @@ export default function ScheduleManagement() {
                                         max: dayjs().endOf('month').format('YYYY-MM-DD')
                                     }}
                                     InputLabelProps={{ shrink: true }}
-                                    helperText="Chỉ cho phép chọn ngày trong tháng hiện tại"
                                 />
 
                                 <Button
@@ -194,9 +194,9 @@ export default function ScheduleManagement() {
                                     startIcon={<Add />}
                                     onClick={handleAddSlot}
                                     fullWidth
-                                    sx={{ py: 1, fontWeight: 700 }}
+                                    sx={{ py: 1.2, fontWeight: 700, borderRadius: 2 }}
                                 >
-                                    Thêm vào thời khóa biểu
+                                    Thêm lịch
                                 </Button>
                             </Stack>
                         </Box>
@@ -204,10 +204,10 @@ export default function ScheduleManagement() {
                 </Grid>
 
                 <Grid item xs={12} md={8}>
-                    <Paper sx={{ p: 3, minHeight: 500, border: '1px solid #eee', boxShadow: 'none', borderRadius: 2 }}>
-                        <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1, fontWeight: 700 }}>
-                            <CalendarMonth color="primary" />
-                            Lịch dạy lớp: {classes.find(c => c._id === selectedClass)?.name || '...'}
+                    <Paper sx={{ p: { xs: 2, md: 3 }, minHeight: { md: 550 }, border: '1px solid #eee', boxShadow: 'none', borderRadius: 2 }}>
+                        <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1, fontWeight: 700, color: 'primary.main' }}>
+                            <CalendarMonth />
+                            Lịch dạy: {classes.find(c => c._id === selectedClass)?.name || '...'}
                         </Typography>
 
                         <Grid container spacing={2}>
@@ -215,31 +215,34 @@ export default function ScheduleManagement() {
                                 const daySlots = getSortedDaySlots(day.value);
                                 return (
                                     <Grid item xs={12} sm={6} key={day.value}>
-                                        <Paper variant="outlined" sx={{ p: 2, height: '100%', bgcolor: daySlots.length > 0 ? '#F6FAF7' : 'transparent', borderColor: daySlots.length > 0 ? '#84A98C' : '#eee' }}>
-                                            <Typography variant="subtitle2" color={daySlots.length > 0 ? '#4D6A54' : 'text.disabled'} sx={{ mb: 1, fontWeight: 700 }}>
+                                        <Paper variant="outlined" sx={{ 
+                                            p: 1.5, 
+                                            height: '100%', 
+                                            bgcolor: daySlots.length > 0 ? '#F6FAF7' : '#fafafa', 
+                                            borderColor: daySlots.length > 0 ? '#84A98C' : '#eee',
+                                            borderRadius: 2 
+                                        }}>
+                                            <Typography variant="subtitle2" color={daySlots.length > 0 ? '#4D6A54' : 'text.disabled'} sx={{ mb: 1, fontWeight: 700, display: 'flex', justifyContent: 'space-between' }}>
                                                 {day.label}
+                                                {daySlots.length > 0 && <Chip label={`${daySlots.length} ca`} size="small" sx={{ height: 20, fontSize: '0.65rem', bgcolor: '#84A98C', color: '#fff' }} />}
                                             </Typography>
                                             <Stack spacing={1}>
                                                 {daySlots.length === 0 ? (
-                                                    <Typography variant="caption" color="text.disabled">Không có lịch dạy</Typography>
+                                                    <Typography variant="caption" color="text.disabled" sx={{ fontStyle: 'italic' }}>Trống</Typography>
                                                 ) : (
                                                     daySlots.map(slot => (
-                                                        <Box key={slot._id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#fff', p: 1, borderRadius: 1, border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+                                                        <Box key={slot._id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#fff', p: 1, borderRadius: 1.5, border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
                                                             <Box>
-                                                                <Chip 
-                                                                    label={PERIODS.find(p => p.value === slot.period)?.label} 
-                                                                    size="small" 
-                                                                    sx={{ fontSize: '0.65rem', height: 18, mb: 0.5, bgcolor: '#E8E0E3', color: '#4A3B42', fontWeight: 600 }} 
-                                                                />
-                                                                <Typography variant="body2" sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.5, color: '#4A3B42' }}>
-                                                                    <AccessTime sx={{ fontSize: 14, color: '#B76E79' }} /> {slot.defaultTime}
+                                                                <Typography variant="caption" sx={{ fontWeight: 700, color: '#B76E79', display: 'block', mb: 0.2 }}>
+                                                                    {PERIODS.find(p => p.value === slot.period)?.label}
+                                                                </Typography>
+                                                                <Typography variant="body2" sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.5, color: '#333' }}>
+                                                                     {slot.defaultTime}
                                                                 </Typography>
                                                             </Box>
-                                                            <Tooltip title="Xóa lịch này">
-                                                                <IconButton size="small" sx={{ color: '#E07A5F' }} onClick={() => handleDeleteSlot(slot._id)}>
-                                                                    <Delete fontSize="small" />
-                                                                </IconButton>
-                                                            </Tooltip>
+                                                            <IconButton size="small" sx={{ color: '#E07A5F' }} onClick={() => handleDeleteSlot(slot._id)}>
+                                                                <Delete fontSize="small" />
+                                                            </IconButton>
                                                         </Box>
                                                     ))
                                                 )}

@@ -161,6 +161,38 @@ const lessonService = {
         await Promise.all(attendancePromises);
         
         return saved;
+    },
+
+    getMonthlyAttendanceReport: async (query) => {
+        const { classId, month, year } = query;
+        if (!classId || !month || !year) return [];
+
+        const startOfMonth = dayjs(`${year}-${month}-01`).startOf('month');
+        const endOfMonth = startOfMonth.endOf('month');
+
+        // Lấy tất cả các buổi học thực tế trong tháng (bỏ qua 'cancelled' if needed, but user wants status)
+        const lessons = await Lesson.find({
+            class: classId,
+            date: { $gte: startOfMonth.toDate(), $lte: endOfMonth.toDate() }
+        }).sort({ date: 1 });
+
+        const lessonIds = lessons.map(l => l._id);
+        
+        // Lấy tất cả các bản ghi điểm danh thuộc các buổi học này
+        const attendances = await Attendance.find({ 
+            lesson: { $in: lessonIds } 
+        }).populate('student').populate({
+            path: 'lesson',
+            select: 'date period actualTime status'
+        });
+
+        return attendances.map(a => ({
+            date: a.lesson.date,
+            actualTime: a.lesson.actualTime,
+            status: a.status,
+            studentName: a.student.fullName,
+            lessonStatus: a.lesson.status
+        }));
     }
 };
 

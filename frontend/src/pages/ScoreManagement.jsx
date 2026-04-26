@@ -153,62 +153,101 @@ export default function ScoreManagement() {
                         </Tabs>
                         <Divider />
 
-                        <Box sx={{ p: 2 }}>
+                        <Box sx={{ p: { xs: 1, md: 2 } }}>
                             {tab === 0 && (
                                 <>
-                                    <TableContainer>
-                                        <Table size="small">
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>Học sinh</TableCell>
-                                                    <TableCell width={120}>Điểm (0-10)</TableCell>
-                                                    <TableCell>Nhận xét</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {enrollments.map((e) => (
-                                                    <TableRow key={e.student._id}>
-                                                        <TableCell>
-                                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                                <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem', bgcolor: 'primary.light' }}>
-                                                                    {e.student.fullName[0]}
-                                                                </Avatar>
-                                                                <Typography variant="body2">{e.student.fullName}</Typography>
-                                                            </Stack>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <TextField
-                                                                type="number"
-                                                                variant="standard"
-                                                                inputProps={{ min: 0, max: 10, step: 0.1 }}
-                                                                value={scoreData[e.student._id]?.score || ''}
-                                                                onChange={(ev) => handleScoreChange(e.student._id, 'score', ev.target.value)}
-                                                            />
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <TextField
-                                                                variant="standard"
-                                                                fullWidth
-                                                                placeholder="Nhận xét sự tiến bộ..."
-                                                                value={scoreData[e.student._id]?.comment || ''}
-                                                                onChange={(ev) => handleScoreChange(e.student._id, 'comment', ev.target.value)}
-                                                            />
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                    <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                                        <Button
-                                            variant="contained"
-                                            startIcon={<Save />}
-                                            onClick={handleSaveScores}
-                                            disabled={saving}
-                                        >
-                                            Lưu điểm hôm nay
-                                        </Button>
-                                    </Box>
+                                     {/* Desktop Table View */}
+                                     <TableContainer sx={{ display: { xs: 'none', md: 'block' } }}>
+                                         <Table size="small">
+                                             <TableHead>
+                                                 <TableRow>
+                                                     <TableCell sx={{ fontWeight: 700 }}>Học sinh</TableCell>
+                                                     <TableCell width={120} sx={{ fontWeight: 700 }}>Điểm (0-10)</TableCell>
+                                                     <TableCell sx={{ fontWeight: 700 }}>Nhận xét</TableCell>
+                                                 </TableRow>
+                                             </TableHead>
+                                             <TableBody>
+                                                 {enrollments.map((e) => (
+                                                     <TableRow key={e.student._id}>
+                                                         <TableCell>
+                                                             <Stack direction="row" spacing={1} alignItems="center">
+                                                                 <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem', bgcolor: 'primary.light', color: 'primary.dark', fontWeight: 700 }}>
+                                                                     {e.student.fullName[0]}
+                                                                 </Avatar>
+                                                                 <Typography variant="body2" fontWeight={500}>{e.student.fullName}</Typography>
+                                                             </Stack>
+                                                         </TableCell>
+                                                         <TableCell>
+                                                             <TextField
+                                                                 type="number"
+                                                                 variant="standard"
+                                                                 inputProps={{ min: 0, max: 10, step: 0.1 }}
+                                                                 value={scoreData[e.student._id]?.score || ''}
+                                                                 onChange={(ev) => handleScoreChange(e.student._id, 'score', ev.target.value)}
+                                                             />
+                                                         </TableCell>
+                                                         <TableCell>
+                                                             <TextField
+                                                                 variant="standard"
+                                                                 fullWidth
+                                                                 placeholder="Nhận xét sự tiến bộ..."
+                                                                 value={scoreData[e.student._id]?.comment || ''}
+                                                                 onChange={(ev) => handleScoreChange(e.student._id, 'comment', ev.target.value)}
+                                                             />
+                                                         </TableCell>
+                                                     </TableRow>
+                                                 ))}
+                                             </TableBody>
+                                         </Table>
+                                     </TableContainer>
+
+                                     {/* Mobile Card-based entry */}
+                                     <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', gap: 2 }}>
+                                         {enrollments.map((e) => (
+                                             <Card key={e.student._id} variant="outlined" sx={{ borderRadius: 3, p: 2, bgcolor: '#fafafa' }}>
+                                                 <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                                                     <Avatar sx={{ bgcolor: 'primary.main', width: 40, height: 40 }}>{e.student.fullName[0]}</Avatar>
+                                                     <Typography fontWeight={700}>{e.student.fullName}</Typography>
+                                                 </Stack>
+                                                 
+                                                 <Grid container spacing={2}>
+                                                     <Grid item xs={4}>
+                                                         <TextField
+                                                            label="Điểm"
+                                                            fullWidth
+                                                            type="number"
+                                                            size="small"
+                                                            inputProps={{ min: 0, max: 10, step: 0.1 }}
+                                                            value={scoreData[e.student._id]?.score || ''}
+                                                            onChange={(ev) => handleScoreChange(e.student._id, 'score', ev.target.value)}
+                                                         />
+                                                     </Grid>
+                                                     <Grid item xs={8}>
+                                                         <TextField
+                                                            label="Nhận xét"
+                                                            fullWidth
+                                                            size="small"
+                                                            value={scoreData[e.student._id]?.comment || ''}
+                                                            onChange={(ev) => handleScoreChange(e.student._id, 'comment', ev.target.value)}
+                                                         />
+                                                     </Grid>
+                                                 </Grid>
+                                             </Card>
+                                         ))}
+                                     </Box>
+
+                                     <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+                                         <Button
+                                             variant="contained"
+                                             startIcon={<Save />}
+                                             onClick={handleSaveScores}
+                                             disabled={saving}
+                                             fullWidth={window.innerWidth < 600}
+                                             sx={{ borderRadius: 2, py: 1, fontWeight: 700 }}
+                                         >
+                                             {saving ? 'Đang lưu...' : 'Lưu điểm ngày hôm nay'}
+                                         </Button>
+                                     </Box>
                                 </>
                             )}
                         </Box>

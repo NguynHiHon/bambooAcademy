@@ -37,57 +37,57 @@ function App() {
             <Route
               path='courses'
               element={
-                <AuthRoute>
+                <AdminRoute>
                   <CourseManagement />
-                </AuthRoute>
+                </AdminRoute>
               }
             />
             <Route
               path='students'
               element={
-                <AuthRoute>
+                <AdminRoute>
                   <StudentManagement />
-                </AuthRoute>
+                </AdminRoute>
               }
             />
             <Route
               path='classes'
               element={
-                <AuthRoute>
+                <AdminRoute>
                   <ClassManagement />
-                </AuthRoute>
+                </AdminRoute>
               }
             />
             <Route
               path='scores'
               element={
-                <AuthRoute>
+                <AdminRoute>
                   <ScoreManagement />
-                </AuthRoute>
+                </AdminRoute>
               }
             />
             <Route
               path='schedule'
               element={
-                <AuthRoute>
+                <AdminRoute>
                   <ScheduleManagement />
-                </AuthRoute>
+                </AdminRoute>
               }
             />
             <Route
               path='attendance'
               element={
-                <AuthRoute>
+                <AdminRoute>
                   <AttendancePage />
-                </AuthRoute>
+                </AdminRoute>
               }
             />
             <Route
               path='tuition'
               element={
-                <AuthRoute>
+                <AdminRoute>
                   <TuitionManagement />
-                </AuthRoute>
+                </AdminRoute>
               }
             />
           </Route>
