@@ -12,6 +12,7 @@ import {
 } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import RomanticGreeting from '../components/Home/RomanticGreeting';
 import scheduleOverrideService from '../services/scheduleOverrideService';
 import studentService from '../services/studentService';
 import classService from '../services/classService';
@@ -280,9 +281,11 @@ export default function HomePage() {
                 <Typography variant="h4" sx={{ fontWeight: 700, color: COLORS.textDark, mb: 1, fontFamily: 'Playfair Display', fontSize: { xs: '1.4rem', md: '2.125rem' } }}>
                     Xin chào {currentUser?.fullName || 'Thanh Trúc'}! 💖
                 </Typography>
-                <Typography variant="body1" sx={{ color: COLORS.textMuted, mb: 3, fontWeight: 500, fontSize: { xs: '0.9rem', md: '1.05rem' } }}>
-                    Hôm nay cô có mệt không? Cùng xem qua lớp học nhé! 🌸
+                <Typography variant="body1" sx={{ color: COLORS.textMuted, mb: 1, fontWeight: 500, fontSize: { xs: '0.9rem', md: '1.05rem' } }}>
+                    Hôm nay em có mệt không? Cùng xem qua lớp học nhé! 🌸
                 </Typography>
+                
+                <RomanticGreeting />
 
                 <Grid container spacing={{ xs: 2, md: 3 }}>
                     <Grid item xs={12} sm={4}>

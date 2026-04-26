@@ -11,6 +11,7 @@ const timetableRouter = require('./timetableRouter');
 const tuitionRouter = require('./tuitionRouter');
 const scheduleOverrideRouter = require('./scheduleOverrideRouter');
 const cloudinaryRouter = require('./cloudinaryRouter');
+const romanticAiRouter = require('./romanticAiRouter');
 const router = express.Router();
 
 router.use('/auth', authRouter);
@@ -25,6 +26,7 @@ router.use('/timetable', timetableRouter);
 router.use('/tuition', tuitionRouter);
 router.use('/schedule-override', scheduleOverrideRouter);
 router.use('/cloudinary', cloudinaryRouter);
+router.use('/ai', romanticAiRouter);
 
 module.exports = router;
 
