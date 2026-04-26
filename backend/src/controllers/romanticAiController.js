@@ -68,15 +68,14 @@ Dịp đặc biệt: ${occasion || 'Ngày thường nhưng tình yêu Hải Hoà
 Nhiệm vụ: Hãy tạo ra một lời nhắn nhủ ngắn gọn (tối đa 40 từ) thể hiện sự quan tâm ấm áp và chân thành của Hải Hoàn dành cho người yêu. 
 Yêu cầu:
 1. **PHONG CÁCH:** Ngôn ngữ hiện đại, tự nhiên, gần gũi (như cách hai người yêu nhau quan tâm nhau hàng ngày). Tuyệt đối tránh các từ ngữ quá sến súa, cổ hủ hay "kịch" (ví dụ: KHÔNG dùng 'đêm xuân', 'thiên đàng', 'nàng'...).
-2. **NỘI DUNG:** Kết hợp sự quan tâm thực tế với cảm xúc nhẹ nhàng:
-    - Nếu trời lạnh/muộn: "Lạnh rồi, mặc ấm vào kẻo anh lo nhé", "Muộn rồi, đừng thức khuya quá em nha".
-    - Nếu trời nóng: "Trời nắng nóng quá, nhớ uống nhiều nước cho khỏe em ạ".
-    - Bình thường: "Hôm nay em có mệt không?", "Nghỉ tay một chút rồi làm tiếp em nhé".
-3. **GIA VỊ (ĐA DẠNG):** Hãy tự sáng tạo hoặc trích dẫn linh hoạt các câu ca dao, tục ngữ, thơ lục bát Việt Nam hay và ý nghĩa. Tuyệt đối KHÔNG sử dụng lặp lại các câu quá quen thuộc (như 'Hữu duyên thiên lý...') trừ khi nó cực kỳ phù hợp với hoàn cảnh. Hãy làm cho mỗi lời nhắn luôn tươi mới và đầy bất ngờ.
+2. **NỘI DUNG:** Quan tâm một cách tự nhiên theo ngữ cảnh (không cần liệt kê tên mùa hay buổi một cách máy móc):
+    - Hãy dặn em giữ ấm, nghỉ ngơi, uống nước hoặc hỏi thăm hôm nay em thế nào dựa trên thời gian và thời tiết hiện tại.
+    - Tập trung vào cảm xúc chân thành, sự đồng hành và thấu hiểu.
+3. **GIA VỊ (ĐA DẠNG):** Sử dụng linh hoạt ca dao, thơ lục bát hoặc những câu văn vần Việt Nam. Tuyệt đối KHÔNG sử dụng lặp lại các câu quá quen thuộc. Mỗi lần nhắn phải là một ý tưởng mới.
 4. **CHỮ KÝ:** Luôn xuống dòng và kết thúc bằng: "Người thương: Hải Hoàn".
 5. Trả về kết quả là một đoạn văn bản thuần túy.
 
-Ví dụ: "Nay trời trở gió, em nhớ mặc thêm áo ấm nhé. Yêu nhau mấy núi cũng trèo, anh chỉ mong em luôn khỏe mạnh và vui vẻ mỗi ngày. \n\nNgười thương: Hải Hoàn"`;
+Ví dụ: "Hôm nay em có chuyện gì vui không? Đừng làm việc quá sức nhé, anh luôn ở đây ủng hộ em. Yêu nhau mấy núi cũng trèo, chỉ mong em luôn bình an và vui vẻ như thế này. \n\nNgười thương: Hải Hoàn"`;
 
             const response = await groq.chat.completions.create({
                 model: 'llama-3.3-70b-versatile',
