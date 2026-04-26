@@ -65,19 +65,18 @@ Hôm nay là: ${now.format('DD/MM/YYYY')}
 Bối cảnh: ${timeOfDay}, ${season}.
 Dịp đặc biệt: ${occasion || 'Ngày thường nhưng tình yêu Hải Hoàn dành cho em vẫn luôn đặc biệt'}.
 
-Nhiệm vụ: Hãy tạo ra một lời nhắn nhủ ngắn gọn (tối đa 40 từ) mang tính quan tâm chân thành và thực tế theo bối cảnh thời gian. 
+Nhiệm vụ: Hãy tạo ra một lời nhắn nhủ ngắn gọn (tối đa 40 từ) thể hiện sự quan tâm ấm áp và chân thành của Hải Hoàn dành cho người yêu. 
 Yêu cầu:
-1. **TRỌNG TÂM (80%):** Quan tâm thực tế dựa trên bối cảnh hiện tại:
-    - Nếu là Mùa Đông hoặc Buổi tối muộn: Dặn em giữ ấm, mặc thêm áo, quàng khăn, đừng để bị lạnh kẻo Hải Hoàn lo.
-    - Nếu là Mùa Hè: Dặn em uống nhiều nước, tránh nắng, giữ sức khỏe giữa trời nóng.
-    - Buổi sáng: Chúc ngày mới suôn sẻ, tràn đầy năng lượng.
-    - Buổi trưa/chiều: Nhắc em nghỉ ngơi, đừng làm việc quá sức.
-2. **GIA VỊ (20%):** Lồng ghép cực kỳ nhẹ nhàng ca dao/thơ văn Việt Nam để lời nhắn thêm sâu sắc. Tuyệt đối KHÔNG được "sến".
-3. **PHONG CÁCH:** Chân thành, mộc mạc của một người đàn ông trưởng thành. Tuyệt đối KHÔNG nhắc tên Hải Hoàn trong nội dung.
+1. **PHONG CÁCH:** Ngôn ngữ hiện đại, tự nhiên, gần gũi (như cách hai người yêu nhau quan tâm nhau hàng ngày). Tuyệt đối tránh các từ ngữ quá sến súa, cổ hủ hay "kịch" (ví dụ: KHÔNG dùng 'đêm xuân', 'thiên đàng', 'nàng'...).
+2. **NỘI DUNG:** Kết hợp sự quan tâm thực tế với cảm xúc nhẹ nhàng:
+    - Nếu trời lạnh/muộn: "Lạnh rồi, mặc ấm vào kẻo anh lo nhé", "Muộn rồi, đừng thức khuya quá em nha".
+    - Nếu trời nóng: "Trời nắng nóng quá, nhớ uống nhiều nước cho khỏe em ạ".
+    - Bình thường: "Hôm nay em có mệt không?", "Nghỉ tay một chút rồi làm tiếp em nhé".
+3. **GIA VỊ:** Có thể điểm xuyết một chút ý thơ hoặc ca dao (như 'Hữu duyên thiên lý...') một cách cực kỳ gọn gàng, coi đó như một cái cớ để bày tỏ sự trân trọng.
 4. **CHỮ KÝ:** Luôn xuống dòng và kết thúc bằng: "Người thương: Hải Hoàn".
-5. Trả về kết quả là một đoạn văn bản (Nội dung nhắn nhủ + Chữ ký).
+5. Trả về kết quả là một đoạn văn bản thuần túy.
 
-Ví dụ (Mùa đông): "Trời bắt đầu lạnh rồi, em nhớ quàng khăn và mặc ấm khi ra ngoài nhé. Hải Hoàn không muốn em bị ốm đâu. Hữu duyên thiên lý năng tương ngộ, sức khỏe của em mới là điều anh trân trọng nhất. \n\nNgười thương: Hải Hoàn"`;
+Ví dụ: "Hôm nay công việc có mệt lắm không em? Hữu duyên thiên lý năng tương ngộ, anh thấy mình thật may mắn vì có em đồng hành. Nghỉ tay một chút rồi hãy làm tiếp nhé, anh lo em mệt đấy. \n\nNgười thương: Hải Hoàn"`;
 
             const response = await groq.chat.completions.create({
                 model: 'llama-3.3-70b-versatile',
