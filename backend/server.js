@@ -29,9 +29,10 @@ app.use('/api', router);
 databaseconfig();
 
 // Start server
-app.listen(process.env.PORT, () => {
+const PORT = process.env.PORT || 9999;
+app.listen(PORT, () => {
     try {
-        console.log(`🚀 Server đã được khởi tạo và chạy ở cổng ${process.env.PORT}`)
+        console.log(`🚀 Server đã được khởi tạo và chạy ở cổng ${PORT}`)
     } catch (error) {
         console.error('Lỗi khi khởi tạo server:', error);
     }

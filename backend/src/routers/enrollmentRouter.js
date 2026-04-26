@@ -4,14 +4,12 @@ const authMiddleWare = require('../middlewares/authMiddleWare');
 
 const router = express.Router();
 
-router.use(authMiddleWare.verifyAccessToken);
+router.post('/', authMiddleWare.verifyAdmin, enrollmentController.enrollStudent);
+router.get('/', authMiddleWare.verifyAdmin, enrollmentController.getAllEnrollments);
 
-router.post('/', enrollmentController.enrollStudent);
-router.get('/', enrollmentController.getAllEnrollments);
-
-router.get('/class/:classId', enrollmentController.getEnrollmentsByClass);
-router.get('/student/:studentId', enrollmentController.getEnrollmentsByStudent);
-router.put('/:id', enrollmentController.updateEnrollment);
-router.delete('/:id', enrollmentController.deleteEnrollment);
+router.get('/class/:classId', authMiddleWare.verifyAdmin, enrollmentController.getEnrollmentsByClass);
+router.get('/student/:studentId', authMiddleWare.verifyAdmin, enrollmentController.getEnrollmentsByStudent);
+router.put('/:id', authMiddleWare.verifyAdmin, enrollmentController.updateEnrollment);
+router.delete('/:id', authMiddleWare.verifyAdmin, enrollmentController.deleteEnrollment);
 
 module.exports = router;

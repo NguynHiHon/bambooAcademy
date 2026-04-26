@@ -4,7 +4,7 @@ import { setAccessToken, clearToken } from '../redux/clices/tokenSlice'
 import { logout } from '../redux/clices/authSlice'
 import { clearUserProfile } from '../redux/clices/userSlice'
 
-const baseURL = 'http://localhost:9999'
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:9999'
 
 export const axiosJWT = axios.create({
     baseURL,
