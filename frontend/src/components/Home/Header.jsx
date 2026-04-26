@@ -57,12 +57,12 @@ export default function Header() {
                 BamBoo<span style={{ color: '#D4AF37' }}>-Academy</span>
             </Typography>
             <Divider sx={{ mb: 2 }} />
-            
+
             {/* User Info in Mobile Drawer */}
             {isAuthenticated && (
                 <Box sx={{ mb: 3, p: 2, bgcolor: 'rgba(212, 175, 55, 0.05)', borderRadius: 4 }}>
-                    <Avatar 
-                        src={displayAvatar} 
+                    <Avatar
+                        src={displayAvatar}
                         sx={{ width: 60, height: 60, mx: 'auto', mb: 1.5, border: '2px solid #D4AF37' }}
                     >
                         {currentUser?.username?.[0].toUpperCase()}
@@ -79,9 +79,9 @@ export default function Header() {
             <List sx={{ px: 1 }}>
                 {navItems.map((item) => (
                     <ListItem key={item.to} disablePadding>
-                        <ListItemButton 
-                            component={Link} 
-                            to={item.to} 
+                        <ListItemButton
+                            component={Link}
+                            to={item.to}
                             onClick={handleDrawerToggle}
                             sx={{ py: 1.5, borderRadius: 3, mb: 0.5 }}
                         >
@@ -90,14 +90,14 @@ export default function Header() {
                         </ListItemButton>
                     </ListItem>
                 ))}
-                
+
                 <Divider sx={{ my: 1 }} />
-                
+
                 {/* Profile & Logout in Mobile Menu */}
                 <ListItem disablePadding>
-                    <ListItemButton 
-                        component={Link} 
-                        to="/profile" 
+                    <ListItemButton
+                        component={Link}
+                        to="/profile"
                         onClick={handleDrawerToggle}
                         sx={{ py: 1.5, borderRadius: 3, mb: 0.5 }}
                     >
@@ -105,17 +105,17 @@ export default function Header() {
                         <ListItemText primary="Hồ sơ cá nhân" primaryTypographyProps={{ fontWeight: 600 }} />
                     </ListItemButton>
                 </ListItem>
-                
+
                 <ListItem disablePadding>
-                    <ListItemButton 
-                        onClick={async () => { 
-                            handleDrawerToggle(); 
-                            await signOutUser(dispatch, navigate); 
+                    <ListItemButton
+                        onClick={async () => {
+                            handleDrawerToggle();
+                            await signOutUser(dispatch, navigate);
                         }}
                         sx={{ py: 1.5, borderRadius: 3, color: 'error.main' }}
                     >
                         <ListItemIcon sx={{ color: 'error.main', minWidth: 40 }}>
-                             <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" /></svg>
                         </ListItemIcon>
                         <ListItemText primary="Đăng xuất" primaryTypographyProps={{ fontWeight: 600 }} />
                     </ListItemButton>

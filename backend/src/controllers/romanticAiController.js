@@ -17,7 +17,7 @@ const getSpecialOccasion = (date) => {
     if (month === 11 && day === 20) return 'Ngày Nhà giáo Việt Nam (20/11) 👨‍🏫';
     if (month === 12 && day === 24) return 'Lễ Giáng sinh 🎄';
     if (month === 1 && day === 1) return 'Tết Dương lịch 🎆';
-    
+
     // Ngày kỷ niệm cá nhân
     if (month === 8 && day === 7) return 'Ngày sinh nhật của người yêu Hải Hoàn (Ngày quan trọng nhất thế gian!) 🎂🎉';
     if (month === 11 && day === 1) return 'Ngày sinh nhật của Hải Hoàn 🎂';

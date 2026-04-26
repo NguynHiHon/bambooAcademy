@@ -3,6 +3,7 @@ import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
+import AIChatbox from './AIChatbox';
 import theme from '../../theme';
 
 export default function MainLayout() {
@@ -22,8 +23,8 @@ export default function MainLayout() {
                     <Outlet />
                 </Box>
                 <Footer />
+                <AIChatbox />
             </Box>
         </ThemeProvider>
     );
 }
-
